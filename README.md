@@ -19,6 +19,6 @@ in the [Vulcan API] into the [Graph Asset Inventory] by consuming the [Vulcan
 assets stream].
 
 
-[Vulcan assets stream]: https://github.com/adevinta/vulcan-api/tree/master/docs/async/asyncapi.yaml
 [Vulcan API]: https://github.com/adevinta/vulcan-api
 [Graph Asset Inventory]: https://github.com/adevinta/graph-asset-inventory-api
+[Vulcan assets stream]: https://github.com/adevinta/vulcan-api/blob/master/docs/asyncapi.yaml
