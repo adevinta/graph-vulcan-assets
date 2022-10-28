@@ -1,0 +1,56 @@
+[
+  {
+    "key": "9a1a0332-88b6-4edc-aa37-50adc1ad96da/f110cf6f-803d-442c-9b42-f6d8cd962bf2",
+    "value": "{\"Id\":\"f110cf6f-803d-442c-9b42-f6d8cd962bf2\",\"Team\":{\"Id\":\"9a1a0332-88b6-4edc-aa37-50adc1ad96da\",\"Name\":\"Team name 0\",\"Description\":\"Team description 0\",\"Tag\":\"a76e1486\"},\"Alias\":\"Asset alias 0\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"www.example.com\",\"Annotations\":[{\"Key\":\"annotation0/0\",\"Value\":\"value0/0\"},{\"Key\":\"annotation0/1\",\"Value\":\"value0/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "www.example.com" }
+    ]
+  },
+  {
+    "key": "9a86666e-ef3a-4630-845d-d3c61e167931/d2e37146-61d7-4010-aa25-2335c385a980",
+    "value": "{\"Id\":\"d2e37146-61d7-4010-aa25-2335c385a980\",\"Team\":{\"Id\":\"9a86666e-ef3a-4630-845d-d3c61e167931\",\"Name\":\"Team name 1\",\"Description\":\"Team description 1\",\"Tag\":\"f0eac043\"},\"Alias\":\"Asset alias 1\",\"Rolfp\":\"R:1/O:0/L:1/F:0/P:1+S:0\",\"Scannable\":false,\"AssetType\":\"Hostname\",\"Identifier\":\"www.example.org\",\"Annotations\":[{\"Key\":\"annotation1/0\",\"Value\":\"value1/0\"},{\"Key\":\"annotation1/1\",\"Value\":\"value1/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "www.example.org" }
+    ]
+  },
+  {
+    "key": "a86f4f99-a75c-436a-915d-905b825906d3/4ab22e34-889e-4c35-8ef2-4411bd162636",
+    "value": "{\"Id\":\"4ab22e34-889e-4c35-8ef2-4411bd162636\",\"Team\":{\"Id\":\"a86f4f99-a75c-436a-915d-905b825906d3\",\"Name\":\"Team name 2\",\"Description\":\"Team description 2\",\"Tag\":\"6deacae3\"},\"Alias\":\"Asset alias 2\",\"Rolfp\":\"R:1/O:1/L:1/F:1/P:1+S:1\",\"Scannable\":true,\"AssetType\":\"DockerImage\",\"Identifier\":\"busybox:latest\",\"Annotations\":[{\"Key\":\"annotation2/0\",\"Value\":\"value2/0\"},{\"Key\":\"annotation2/1\",\"Value\":\"value2/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "DockerImage" },
+      { "key": "identifier", "value": "busybox:latest" }
+    ]
+  },
+  {
+    "key": "32c3eb6a-189f-439c-b921-56ed27fa5c4a/4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
+    "value": "{\"Id\":\"4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599\",\"Team\":{\"Id\":\"32c3eb6a-189f-439c-b921-56ed27fa5c4a\",\"Name\":\"Team name 3\",\"Description\":\"Team description 3\",\"Tag\":\"bffc5223\"},\"Alias\":\"Asset alias 3\",\"Rolfp\":\"R:0/O:0/L:0/F:0/P:0+S:0\",\"Scannable\":false,\"AssetType\":\"Hostname\",\"Identifier\":\"www.example.net\",\"Annotations\":[{\"Key\":\"annotation3/0\",\"Value\":\"value3/0\"},{\"Key\":\"annotation3/1\",\"Value\":\"value3/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "www.example.net" }
+    ]
+  },
+  {
+    "key": "bdb2e4a3-5d86-46f8-aae0-b2cd3a56e230/15ae9294-e1ed-4615-8423-2b78e5d04b95",
+    "value": null,
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "DockerImage" },
+      { "key": "identifier", "value": "nilvalue:latest" }
+    ]
+  },
+  {
+    "key": "e363e9a0-2e0d-465d-99ea-5851dd962e92/78d51da2-0d58-4e1c-a314-be07047bf254",
+    "value": "{\"Id\":\"78d51da2-0d58-4e1c-a314-be07047bf254\",\"Team\":{\"Id\":\"e363e9a0-2e0d-465d-99ea-5851dd962e92\",\"Name\":\"Team name bad version\",\"Description\":\"Team description bad version\",\"Tag\":\"3925ad18\"},\"Alias\":\"Asset alias bad version\",\"Rolfp\":\"R:1/O:1/L:1/F:1/P:1+S:1\",\"Scannable\":true,\"AssetType\":\"DockerImage\",\"Identifier\":\"golang:latest\",\"Annotations\":[{\"Key\":\"annotation bad version/0\",\"Value\":\"value bad version/0\"},{\"Key\":\"annotation bad version/1\",\"Value\":\"value bad version/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "1.2.3" },
+      { "key": "type", "value": "DockerImage" },
+      { "key": "identifier", "value": "golang:latest" }
+    ]
+  }
+]

@@ -71,7 +71,7 @@ func (proc AloProcessor) Process(ctx context.Context, entity string, h stream.Ms
 		default:
 		}
 
-		msg, err := proc.c.ReadMessage(100 * time.Millisecond)
+		kmsg, err := proc.c.ReadMessage(100 * time.Millisecond)
 		if err != nil {
 			kerr, ok := err.(kafka.Error)
 			if ok && kerr.Code() == kafka.ErrTimedOut {
@@ -80,11 +80,24 @@ func (proc AloProcessor) Process(ctx context.Context, entity string, h stream.Ms
 			return fmt.Errorf("error reading message: %w", kerr)
 		}
 
-		if err := h(msg.Key, msg.Value); err != nil {
+		msg := stream.Message{
+			Key:   kmsg.Key,
+			Value: kmsg.Value,
+		}
+
+		for _, hdr := range kmsg.Headers {
+			entry := stream.MetadataEntry{
+				Key:   []byte(hdr.Key),
+				Value: hdr.Value,
+			}
+			msg.Metadata = append(msg.Metadata, entry)
+		}
+
+		if err := h(msg); err != nil {
 			return fmt.Errorf("error processing message: %w", err)
 		}
 
-		if _, err := proc.c.StoreMessage(msg); err != nil {
+		if _, err := proc.c.StoreMessage(kmsg); err != nil {
 			return fmt.Errorf("error storing offset: %w", err)
 		}
 	}

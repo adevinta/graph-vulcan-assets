@@ -2,58 +2,58 @@
 package streamtest
 
 import (
-	"bufio"
-	"bytes"
 	"context"
+	"encoding/json"
 	"os"
 
 	"github.com/adevinta/graph-vulcan-assets/stream"
 )
 
-// Message represents a message coming from a stream.
-type Message struct {
-	Key   []byte
-	Value []byte
-}
-
-// Parse parses a file with messages and returns them. The expected format is:
-//
-//	# Comment.
-//	key0:value0
-//	key1:value1
-//	...
-//	keyN:valueN
-//
-// It panics if the file cannot be parsed.
-func Parse(filename string) []Message {
+// Parse parses a json file with messages and returns them. It panics if the
+// file cannot be parsed.
+func Parse(filename string) []stream.Message {
 	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
-	s := bufio.NewScanner(f)
-
-	var msgs []Message
-	for s.Scan() {
-		l := s.Bytes()
-		if len(l) == 0 {
-			// Empty line.
-			continue
-		}
-		if l[0] == '#' {
-			// Comment.
-			continue
-		}
-		parts := bytes.SplitN(l, []byte{':'}, 2)
-		if len(parts) != 2 {
-			panic("malformed line")
-		}
-		msgs = append(msgs, Message{Key: parts[0], Value: parts[1]})
+	var testdata []struct {
+		Key      *string `json:"key,omitempty"`
+		Value    *string `json:"value,omitempty"`
+		Metadata []struct {
+			Key   string `json:"key"`
+			Value string `json:"value"`
+		} `json:"metadata,omitempty"`
 	}
 
-	if err := s.Err(); err != nil {
+	if err := json.NewDecoder(f).Decode(&testdata); err != nil {
 		panic(err)
+	}
+
+	var msgs []stream.Message
+	for _, td := range testdata {
+		var msg stream.Message
+		if td.Key != nil {
+			msg.Key = []byte(*td.Key)
+		}
+		if td.Value != nil {
+			msg.Value = []byte(*td.Value)
+		}
+		for _, e := range td.Metadata {
+			if e.Key == "" {
+				panic("empty metadata key")
+			}
+			if e.Value == "" {
+				panic("empty metadata value")
+			}
+			entry := stream.MetadataEntry{
+				Key:   []byte(e.Key),
+				Value: []byte(e.Value),
+			}
+			msg.Metadata = append(msg.Metadata, entry)
+		}
+		msgs = append(msgs, msg)
 	}
 
 	return msgs
@@ -62,19 +62,19 @@ func Parse(filename string) []Message {
 // MockProcessor mocks a stream processor with a predefined set of messages. It
 // implements the interface [stream.Processor].
 type MockProcessor struct {
-	msgs []Message
+	msgs []stream.Message
 }
 
 // NewMockProcessor returns a [MockProcessor]. It initializes its internal list
 // of messages with msgs.
-func NewMockProcessor(msgs []Message) *MockProcessor {
+func NewMockProcessor(msgs []stream.Message) *MockProcessor {
 	return &MockProcessor{msgs}
 }
 
 // Process processes the messages passed to [NewMockProcessor].
 func (mp *MockProcessor) Process(ctx context.Context, entity string, h stream.MsgHandler) error {
 	for _, msg := range mp.msgs {
-		if err := h(msg.Key, msg.Value); err != nil {
+		if err := h(msg); err != nil {
 			return err
 		}
 	}

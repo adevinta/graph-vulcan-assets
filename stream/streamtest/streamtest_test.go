@@ -4,43 +4,74 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
+	"github.com/adevinta/graph-vulcan-assets/stream"
 )
 
 func TestParse(t *testing.T) {
 	tests := []struct {
 		name        string
 		filename    string
-		want        []Message
+		want        []stream.Message
 		shouldPanic bool
 	}{
 		{
 			name:     "valid file",
-			filename: "testdata/valid.dat",
-			want: []Message{
+			filename: "testdata/valid.json",
+			want: []stream.Message{
 				{
 					Key:   []byte("key0"),
 					Value: []byte("value0"),
+					Metadata: []stream.MetadataEntry{
+						{
+							Key:   []byte("hkey00"),
+							Value: []byte("hvalue00"),
+						},
+						{
+							Key:   []byte("hkey01"),
+							Value: []byte("hvalue01"),
+						},
+					},
 				},
 				{
-					Key:   []byte("key1"),
-					Value: []byte("value1:a:b:c"),
+					Key:      []byte("key1"),
+					Value:    []byte("value1"),
+					Metadata: nil,
 				},
 				{
-					Key:   []byte("key2"),
-					Value: []byte("value2"),
+					Key:      []byte("key2"),
+					Value:    nil,
+					Metadata: nil,
+				},
+				{
+					Key:      nil,
+					Value:    []byte("value3"),
+					Metadata: nil,
 				},
 			},
 			shouldPanic: false,
 		},
 		{
-			name:        "malformed file",
-			filename:    "testdata/malformed.dat",
+			name:        "malformed json",
+			filename:    "testdata/malformed_json.json",
+			want:        nil,
+			shouldPanic: true,
+		},
+		{
+			name:        "null metadata key",
+			filename:    "testdata/malformed_null_metadata_key.json",
+			want:        nil,
+			shouldPanic: true,
+		},
+		{
+			name:        "null metadata value",
+			filename:    "testdata/malformed_null_metadata_value.json",
 			want:        nil,
 			shouldPanic: true,
 		},
 		{
 			name:        "nonexistent file",
-			filename:    "testdata/nonexistent.dat",
+			filename:    "testdata/nonexistent.json",
 			want:        nil,
 			shouldPanic: true,
 		},
@@ -50,7 +81,7 @@ func TestParse(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if err := recover(); (err != nil) != tt.shouldPanic {
-					t.Errorf("unexpected panic behavior")
+					t.Errorf("unexpected panic behavior: %v", err)
 				}
 			}()
 
