@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e -u
+
+# Set working directory to the root of the repo.
+cd "$(dirname $0)/.."
+
+# Start testing infrastructure (i.e. kafka and graph-asset-inventory-api).
+./_script/setup
+
+# Disable the test cache (-count=1), so tests always connect to kafka.
+go test -count=1 "$@"

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e -u
+
+# Set working directory to /_script.
+cd "$(dirname $0)"
+
+docker-compose -p 'graph-vulcan-assets' rm -s -f

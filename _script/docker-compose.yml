@@ -1,0 +1,85 @@
+version: "2.4"
+
+services:
+  setup:
+    image: busybox
+    depends_on:
+      # The service_healthy condition is not honored by "docker-compose run" in
+      # all docker-compose versions, but it is respected if the conditions is
+      # in a transitive dependency. Thus, we have created an intermediate
+      # dependency with all the required conditions.
+      - healthchecks
+    entrypoint: ["echo", "setup done"]
+
+  healthchecks:
+    image: busybox
+    depends_on:
+      graph-asset-inventory-api:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    entrypoint: ["echo", "healthchecks done"]
+
+  graph-asset-inventory-api:
+    image: adevinta/graph-asset-inventory-api:v0.5.0
+    ports:
+      - 127.0.0.1:8000:8000
+    environment:
+      - FLASK_ENV=development
+      - PORT=8000
+      - GREMLIN_ENDPOINT=ws://gremlin-server:8182/gremlin
+      - GREMLIN_AUTH_MODE=none
+    healthcheck:
+      test: ["CMD", "nc", "-z", "graph-asset-inventory-api", "8000"]
+      interval: 5s
+      timeout: 10s
+      retries: 6
+    depends_on:
+      gremlin-server:
+        condition: service_healthy
+
+  gremlin-server:
+    image: tinkerpop/gremlin-server:3.5.0
+    ports:
+      - 127.0.0.1:8182:8182
+    expose:
+      - 8182
+    volumes:
+      - ./gremlin-server/conf:/opt/gremlin-server/conf:ro
+    healthcheck:
+      test: ["CMD", "nc", "-z", "gremlin-server", "8182"]
+      interval: 5s
+      timeout: 10s
+      retries: 6
+    entrypoint: /opt/gremlin-server/bin/gremlin-server.sh
+    command: conf/gremlin-server.yaml
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    ports:
+      - 127.0.0.1:29092:29092
+    expose:
+      - 9092
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://127.0.0.1:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    healthcheck:
+      test: ["CMD", "nc", "-z", "kafka", "29092"]
+      interval: 5s
+      timeout: 10s
+      retries: 6
+    depends_on:
+      zookeeper:
+        condition: service_started
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    expose:
+      - 2181
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
