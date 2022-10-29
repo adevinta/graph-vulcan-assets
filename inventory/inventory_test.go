@@ -190,7 +190,7 @@ func TestClientTeamsUpdate(t *testing.T) {
 	want := []TeamResp{
 		{
 			Identifier: team.Identifier,
-			Name: "NewName",
+			Name:       "NewName",
 		},
 	}
 

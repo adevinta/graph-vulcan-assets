@@ -321,7 +321,7 @@ func (cli Client) CreateTeam(identifier, name string) (TeamResp, error) {
 func (cli Client) UpdateTeam(id, identifier, name string) (TeamResp, error) {
 	payload := TeamReq{
 		Identifier: identifier,
-		Name: name,
+		Name:       name,
 	}
 
 	var data bytes.Buffer
