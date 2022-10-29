@@ -162,6 +162,14 @@ func (cli Client) urlTeams(identifier string, pag Pagination) string {
 	return u.String()
 }
 
+func (cli Client) urlTeamsID(id string) string {
+	p := "/v1/teams"
+	p = path.Join(p, id)
+	u := cli.endpoint.JoinPath(p)
+
+	return u.String()
+}
+
 func (cli Client) urlAssets(typ, identifier string, validAt time.Time, pag Pagination) string {
 	u := cli.endpoint.JoinPath("/v1/assets")
 
@@ -295,6 +303,50 @@ func (cli Client) CreateTeam(identifier, name string) (TeamResp, error) {
 		}
 		err := InvalidStatusError{
 			Expected: []int{http.StatusCreated},
+			Returned: resp.StatusCode,
+		}
+		return TeamResp{}, err
+	}
+
+	var team TeamResp
+	if err := json.NewDecoder(resp.Body).Decode(&team); err != nil {
+		return TeamResp{}, fmt.Errorf("invalid response: %w", err)
+	}
+
+	return team, nil
+}
+
+// UpdateTeam updates a team with a given ID. The identifier must match the
+// asset ID.
+func (cli Client) UpdateTeam(id, identifier, name string) (TeamResp, error) {
+	payload := TeamReq{
+		Identifier: identifier,
+		Name: name,
+	}
+
+	var data bytes.Buffer
+	if err := json.NewEncoder(&data).Encode(payload); err != nil {
+		return TeamResp{}, err
+	}
+
+	u := cli.urlTeamsID(id)
+	req, err := http.NewRequest(http.MethodPut, u, &data)
+	if err != nil {
+		return TeamResp{}, fmt.Errorf("could not create HTTP request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := cli.httpcli.Do(req)
+	if err != nil {
+		return TeamResp{}, fmt.Errorf("HTTP request error: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNotFound {
+			return TeamResp{}, ErrNotFound
+		}
+		err := InvalidStatusError{
+			Expected: []int{http.StatusOK},
 			Returned: resp.StatusCode,
 		}
 		return TeamResp{}, err

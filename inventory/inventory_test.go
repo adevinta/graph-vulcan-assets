@@ -160,6 +160,50 @@ func TestClientTeamsPagination(t *testing.T) {
 	}
 }
 
+func TestClientTeamsUpdate(t *testing.T) {
+	if err := resetGraph(); err != nil {
+		t.Fatalf("error setting up graph: %v", err)
+	}
+
+	cli, err := NewClient(inventoryEndpoint, true)
+	if err != nil {
+		t.Fatalf("error creating client: %v", err)
+	}
+
+	team, err := cli.CreateTeam(
+		"Identifier",
+		"Name",
+	)
+	if err != nil {
+		t.Fatalf("error creating team: %v", err)
+	}
+
+	_, err = cli.UpdateTeam(
+		team.ID,
+		team.Identifier,
+		"NewName",
+	)
+	if err != nil {
+		t.Fatalf("error updating team: %v", err)
+	}
+
+	want := []TeamResp{
+		{
+			Identifier: team.Identifier,
+			Name: "NewName",
+		},
+	}
+
+	got, err := cli.Teams("", Pagination{})
+	if err != nil {
+		t.Fatalf("error getting teams: %v", err)
+	}
+
+	if diff := cmp.Diff(want, got, teamsDiffOpts...); diff != "" {
+		t.Errorf("teams mismatch (-want +got):\n%v", diff)
+	}
+}
+
 var (
 	assetsTestdata = []AssetReq{
 		{
