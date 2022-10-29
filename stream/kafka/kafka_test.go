@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	bootstrapServers = "127.0.0.1:29092"
+	bootstrapServers = "127.0.0.1:9092"
 	groupPrefix      = "stream_kafka_kafka_test_group_"
 	topicPrefix      = "stream_kafka_kafka_test_topic_"
 	messagesFile     = "testdata/messages.json"
