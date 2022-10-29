@@ -19,7 +19,7 @@ import (
 const vulcanMajorVersion = 0
 
 // AssetsEntityName is the name of the entity linked to assets.
-const assetsEntityName = "assets"
+const assetsEntityName = "assets-v0"
 
 // AssetPayload represents the "assetPayload" model as defined by the Vulcan
 // async API.
@@ -94,8 +94,8 @@ func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
 		id := string(msg.Key)
 
 		var (
-			payload   AssetPayload
-			isNil bool
+			payload AssetPayload
+			isNil   bool
 		)
 
 		if msg.Value != nil {

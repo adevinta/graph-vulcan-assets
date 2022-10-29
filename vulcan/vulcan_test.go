@@ -12,9 +12,9 @@ import (
 )
 
 type asset struct {
-	Id        string
-	Payload   AssetPayload
-	IsNil bool
+	Id      string
+	Payload AssetPayload
+	IsNil   bool
 }
 
 var testdataValidAssets = []asset{
