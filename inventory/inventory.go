@@ -200,32 +200,6 @@ func (cli Client) urlAssetsID(id string) string {
 	return u.String()
 }
 
-func (cli Client) urlOwners(assetID string, pag Pagination) string {
-	p := "/v1/assets"
-	p = path.Join(p, assetID)
-	p = path.Join(p, "owners")
-	u := cli.endpoint.JoinPath(p)
-
-	q := u.Query()
-	if pag.Size != 0 {
-		q.Set("page", strconv.Itoa(pag.Page))
-		q.Set("size", strconv.Itoa(pag.Size))
-	}
-	u.RawQuery = q.Encode()
-
-	return u.String()
-}
-
-func (cli Client) urlOwnersID(assetID, teamID string) string {
-	p := "/v1/assets"
-	p = path.Join(p, assetID)
-	p = path.Join(p, "owners")
-	p = path.Join(p, teamID)
-	u := cli.endpoint.JoinPath(p)
-
-	return u.String()
-}
-
 func (cli Client) urlParents(id string, pag Pagination) string {
 	p := "/v1/assets"
 	p = path.Join(p, id)
@@ -247,6 +221,48 @@ func (cli Client) urlParentsID(childID, parentID string) string {
 	p = path.Join(p, childID)
 	p = path.Join(p, "parents")
 	p = path.Join(p, parentID)
+	u := cli.endpoint.JoinPath(p)
+
+	return u.String()
+}
+
+func (cli Client) urlChildren(id string, pag Pagination) string {
+	p := "/v1/assets"
+	p = path.Join(p, id)
+	p = path.Join(p, "children")
+	u := cli.endpoint.JoinPath(p)
+
+	q := u.Query()
+	if pag.Size != 0 {
+		q.Set("page", strconv.Itoa(pag.Page))
+		q.Set("size", strconv.Itoa(pag.Size))
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String()
+}
+
+func (cli Client) urlOwners(assetID string, pag Pagination) string {
+	p := "/v1/assets"
+	p = path.Join(p, assetID)
+	p = path.Join(p, "owners")
+	u := cli.endpoint.JoinPath(p)
+
+	q := u.Query()
+	if pag.Size != 0 {
+		q.Set("page", strconv.Itoa(pag.Page))
+		q.Set("size", strconv.Itoa(pag.Size))
+	}
+	u.RawQuery = q.Encode()
+
+	return u.String()
+}
+
+func (cli Client) urlOwnersID(assetID, teamID string) string {
+	p := "/v1/assets"
+	p = path.Join(p, assetID)
+	p = path.Join(p, "owners")
+	p = path.Join(p, teamID)
 	u := cli.endpoint.JoinPath(p)
 
 	return u.String()
@@ -552,6 +568,35 @@ func (cli Client) UpsertParent(childID, parentID string, timestamp, expiration t
 	}
 
 	return parents, nil
+}
+
+// Children returns the outgoing "parent of" relations of the asset with the
+// given ID. The pag parameter controls pagination.
+func (cli Client) Children(assetID string, pag Pagination) ([]ParentOfResp, error) {
+	u := cli.urlChildren(assetID, pag)
+	resp, err := cli.httpcli.Get(u)
+	if err != nil {
+		return nil, fmt.Errorf("HTTP request error: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNotFound {
+			return nil, ErrNotFound
+		}
+		err := InvalidStatusError{
+			Expected: []int{http.StatusOK},
+			Returned: resp.StatusCode,
+		}
+		return nil, err
+	}
+
+	var children []ParentOfResp
+	if err := json.NewDecoder(resp.Body).Decode(&children); err != nil {
+		return nil, fmt.Errorf("invalid response: %w", err)
+	}
+
+	return children, nil
 }
 
 // Owners returns the "owns" relations of the asset with the provided ID. The

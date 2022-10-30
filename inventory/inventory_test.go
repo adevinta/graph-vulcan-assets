@@ -646,6 +646,106 @@ func TestClientParentsUpdate(t *testing.T) {
 	}
 }
 
+func TestClientChildren(t *testing.T) {
+	if err := resetGraph(); err != nil {
+		t.Fatalf("error setting up graph: %v", err)
+	}
+
+	cli, err := NewClient(inventoryEndpoint, true)
+	if err != nil {
+		t.Fatalf("error creating client: %v", err)
+	}
+
+	parent, err := cli.CreateAsset(
+		"Type",
+		"Identifier",
+		*strtime("2022-01-01T12:00:00Z"),
+		*strtime("2022-02-01T12:00:00Z"),
+	)
+	if err != nil {
+		t.Fatalf("error creating parent asset: %v", err)
+	}
+
+	for i, td := range parentsTestdata {
+		typ := "Type" + strconv.Itoa(i)
+		identifier := "Identifier" + strconv.Itoa(i)
+		child, err := cli.CreateAsset(
+			typ,
+			identifier,
+			*strtime("2022-01-01T12:00:00Z"),
+			*strtime("2022-02-01T12:00:00Z"),
+		)
+		if err != nil {
+			t.Fatalf("error creating child asset: %v", err)
+		}
+
+		if _, err := cli.UpsertParent(child.ID, parent.ID, *td.Timestamp, td.Expiration); err != nil {
+			t.Fatalf("error creating parent: %v", err)
+		}
+	}
+
+	got, err := cli.Children(parent.ID, Pagination{})
+	if err != nil {
+		t.Fatalf("error getting parents: %v", err)
+	}
+
+	if diff := cmp.Diff(parentsWant, got, parentsDiffOpts...); diff != "" {
+		t.Errorf("parents mismatch (-want +got):\n%v", diff)
+	}
+}
+
+func TestClientChildrenPagination(t *testing.T) {
+	if err := resetGraph(); err != nil {
+		t.Fatalf("error setting up graph: %v", err)
+	}
+
+	cli, err := NewClient(inventoryEndpoint, true)
+	if err != nil {
+		t.Fatalf("error creating client: %v", err)
+	}
+
+	parent, err := cli.CreateAsset(
+		"Type",
+		"Identifier",
+		*strtime("2022-01-01T12:00:00Z"),
+		*strtime("2022-02-01T12:00:00Z"),
+	)
+	if err != nil {
+		t.Fatalf("error creating parent asset: %v", err)
+	}
+
+	for i, td := range parentsTestdata {
+		typ := "Type" + strconv.Itoa(i)
+		identifier := "Identifier" + strconv.Itoa(i)
+		child, err := cli.CreateAsset(
+			typ,
+			identifier,
+			*strtime("2022-01-01T12:00:00Z"),
+			*strtime("2022-02-01T12:00:00Z"),
+		)
+		if err != nil {
+			t.Fatalf("error creating child asset: %v", err)
+		}
+
+		if _, err := cli.UpsertParent(child.ID, parent.ID, *td.Timestamp, td.Expiration); err != nil {
+			t.Fatalf("error creating parent: %v", err)
+		}
+	}
+
+	var got []ParentOfResp
+	for i := 0; i < len(parentsTestdata); i++ {
+		children, err := cli.Children(parent.ID, Pagination{Size: 1, Page: i})
+		if err != nil {
+			t.Fatalf("error getting children: %v", err)
+		}
+		got = append(got, children...)
+	}
+
+	if diff := cmp.Diff(parentsWant, got, parentsDiffOpts...); diff != "" {
+		t.Errorf("parents mismatch (-want +got):\n%v", diff)
+	}
+}
+
 var (
 	ownersTestdata = []OwnsReq{
 		{

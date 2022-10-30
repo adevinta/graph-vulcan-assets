@@ -21,7 +21,7 @@ services:
     entrypoint: ["echo", "healthchecks done"]
 
   graph-asset-inventory-api:
-    image: adevinta/graph-asset-inventory-api:v0.5.0
+    image: adevinta/graph-asset-inventory-api:v0.6.0
     ports:
       - 127.0.0.1:8000:8000
     environment:
