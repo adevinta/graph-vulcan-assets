@@ -18,7 +18,52 @@ The Vulcan asset consumer is a long running job that allows to feed the assets
 in the [Vulcan API] into the [Graph Asset Inventory] by consuming the [Vulcan
 assets stream].
 
+## Test
+
+Start the testing infrastructure:
+
+```
+./_script/setup
+```
+
+Execute the tests:
+
+```
+go test -count=1 -cover ./...
+```
+
+Stop the testing infrastructure:
+
+```
+./_script/clean
+```
+
+## Environment Variables
+
+These are the required environment variables:
+
+| Variable | Description | Example |
+| --- | --- | --- |
+| `LOG_LEVEL` | Log level. Valid values: info, debug, error, disabled | `info` |
+| `RETRY_DURATION` | Time between retries if the stream processor fails | `5s` |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | `kafka.example.com:9092` |
+| `KAFKA_GROUP_ID` | Kafka consumer group ID | `graph-vulcan-assets` |
+| `KAFKA_USERNAME` | Kafka username | `username` |
+| `KAFKA_PASSWORD` | kafka password | `password` |
+| `INVENTORY_ENDPOINT` | Endpoint of the Security Graph Asset Inventory | `https://inventory.example.com` |
+| `INVENTORY_INSECURE_SKIP_VERIFY` | If the value is `1` then skip TLS verification | `0` |
+
+The directory `/_env` in this repository contains some example configurations.
+
+## Contributing
+
+**This project is in an early stage, we are not accepting external
+contributions yet.**
+
+To contribute, please read the contribution guidelines in [CONTRIBUTING.md].
+
 
 [Vulcan API]: https://github.com/adevinta/vulcan-api
 [Graph Asset Inventory]: https://github.com/adevinta/graph-asset-inventory-api
 [Vulcan assets stream]: https://github.com/adevinta/vulcan-api/blob/master/docs/asyncapi.yaml
+[CONTRIBUTING.md]: CONTRIBUTING.md
