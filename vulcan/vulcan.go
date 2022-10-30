@@ -14,12 +14,14 @@ import (
 	"github.com/adevinta/graph-vulcan-assets/stream"
 )
 
-// vulcanMajorVersion is the major version of the Vulcan asynchronous API
-// supported by [Client].
-const vulcanMajorVersion = 0
+const (
+	// MajorVersion is the major version of the Vulcan asynchronous API
+	// supported by [Client].
+	MajorVersion = 0
 
-// AssetsEntityName is the name of the entity linked to assets.
-const assetsEntityName = "assets-v0"
+	// AssetsEntityName is the name of the entity linked to assets.
+	AssetsEntityName = "assets-v0"
+)
 
 // AssetPayload represents the "assetPayload" model as defined by the Vulcan
 // async API.
@@ -80,7 +82,7 @@ func NewClient(proc stream.Processor) Client {
 // using the provided handler. This method blocks the calling goroutine until
 // the specified context is cancelled.
 func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
-	return c.proc.Process(ctx, assetsEntityName, func(msg stream.Message) error {
+	return c.proc.Process(ctx, AssetsEntityName, func(msg stream.Message) error {
 		version, typ, identifier, err := parseMetadata(msg)
 		if err != nil {
 			return fmt.Errorf("invalid metadata: %v", err)
@@ -156,5 +158,5 @@ func supportedVersion(v string) bool {
 		return false
 	}
 
-	return major == vulcanMajorVersion
+	return major == MajorVersion
 }
