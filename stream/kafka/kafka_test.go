@@ -21,6 +21,7 @@ const (
 	groupPrefix      = "stream_kafka_kafka_test_group_"
 	topicPrefix      = "stream_kafka_kafka_test_topic_"
 	messagesFile     = "testdata/messages.json"
+	timeout          = 5 * time.Minute
 )
 
 func init() {
@@ -116,7 +117,7 @@ func TestAloProcessorProcess(t *testing.T) {
 		got []stream.Message
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	err = proc.Process(ctx, topic, func(msg stream.Message) error {
 		got = append(got, msg)
 
@@ -170,7 +171,7 @@ func TestAloProcessorProcessAtLeastOnce(t *testing.T) {
 	)
 
 	// Fail after processing n messages.
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	err = proc.Process(ctx, topic, func(msg stream.Message) error {
@@ -191,7 +192,7 @@ func TestAloProcessorProcessAtLeastOnce(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Resume stream processing.
-	ctx, cancel = context.WithTimeout(context.Background(), 1*time.Minute)
+	ctx, cancel = context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	err = proc.Process(ctx, topic, func(msg stream.Message) error {
