@@ -1,0 +1,13 @@
+# Command configuration.
+LOG_LEVEL=debug      # valid values: info, debug, error, disabled
+RETRY_DURATION='5s'  # 0 means no retries
+
+# Kafka configuration.
+KAFKA_BOOTSTRAP_SERVERS='127.0.0.1:9092'
+KAFKA_GROUP_ID='graph-vulcan-assets'
+KAFKA_USERNAME=''
+KAFKA_PASSWORD=''
+
+# Asset Inventory configuration.
+INVENTORY_ENDPOINT='http://127.0.0.1:8000'
+INVENTORY_INSECURE_SKIP_VERIFY=1
