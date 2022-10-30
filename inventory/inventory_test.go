@@ -21,7 +21,7 @@ func resetGraph() error {
 		settings.LogVerbosity = gremlingo.Off
 	})
 	if err != nil {
-		return fmt.Errorf("could not connect to Neptune: %v", err)
+		return fmt.Errorf("could not connect to gremlin-server: %w", err)
 	}
 	defer conn.Close()
 

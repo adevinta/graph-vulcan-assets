@@ -85,7 +85,7 @@ func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
 	return c.proc.Process(ctx, AssetsEntityName, func(msg stream.Message) error {
 		version, typ, identifier, err := parseMetadata(msg)
 		if err != nil {
-			return fmt.Errorf("invalid metadata: %v", err)
+			return fmt.Errorf("invalid metadata: %w", err)
 		}
 
 		if !supportedVersion(version) {

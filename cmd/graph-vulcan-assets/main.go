@@ -37,7 +37,7 @@ func main() {
 // run is invoked by main and does the actual work.
 func run(ctx context.Context, cfg config) error {
 	if err := log.SetLevel(cfg.logLevel); err != nil {
-		return fmt.Errorf("error setting log level: %v", err)
+		return fmt.Errorf("error setting log level: %w", err)
 	}
 
 	kcfg := map[string]any{
@@ -56,7 +56,7 @@ func run(ctx context.Context, cfg config) error {
 
 	proc, err := kafka.NewAloProcessor(kcfg)
 	if err != nil {
-		return fmt.Errorf("error creating kafka processor: %v", err)
+		return fmt.Errorf("error creating kafka processor: %w", err)
 	}
 	defer proc.Close()
 
@@ -64,7 +64,7 @@ func run(ctx context.Context, cfg config) error {
 
 	icli, err := inventory.NewClient(cfg.inventoryEndpoint, cfg.inventoryInsecureSkipVerify)
 	if err != nil {
-		return fmt.Errorf("error creating asset inventory client: %v", err)
+		return fmt.Errorf("error creating asset inventory client: %w", err)
 	}
 
 	for {

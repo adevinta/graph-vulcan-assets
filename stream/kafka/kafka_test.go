@@ -28,7 +28,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func setupKafka(topic, filename string) (msgs []stream.Message, err error) {
+func setupKafka(topic string) (msgs []stream.Message, err error) {
 	cfg := &kafka.ConfigMap{
 		"bootstrap.servers": bootstrapServers,
 
@@ -39,14 +39,14 @@ func setupKafka(topic, filename string) (msgs []stream.Message, err error) {
 
 	prod, err := kafka.NewProducer(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("error creating producer: %v", err)
+		return nil, fmt.Errorf("error creating producer: %w", err)
 	}
 	defer prod.Close()
 
-	msgs = streamtest.Parse(filename)
+	msgs = streamtest.Parse(messagesFile)
 	for _, msg := range msgs {
 		if err := produceMessage(prod, topic, msg); err != nil {
-			return nil, fmt.Errorf("error producing message: %v", err)
+			return nil, fmt.Errorf("error producing message: %w", err)
 		}
 	}
 
@@ -76,7 +76,7 @@ func produceMessage(prod *kafka.Producer, topic string, msg stream.Message) erro
 	}
 
 	if err := prod.Produce(kmsg, events); err != nil {
-		return fmt.Errorf("failed to produce message: %v", err)
+		return fmt.Errorf("failed to produce message: %w", err)
 	}
 
 	e := <-events
@@ -94,7 +94,7 @@ func produceMessage(prod *kafka.Producer, topic string, msg stream.Message) erro
 func TestAloProcessorProcess(t *testing.T) {
 	topic := topicPrefix + strconv.FormatInt(rand.Int63(), 16)
 
-	want, err := setupKafka(topic, messagesFile)
+	want, err := setupKafka(topic)
 	if err != nil {
 		t.Fatalf("error setting up kafka: %v", err)
 	}
@@ -143,7 +143,7 @@ func TestAloProcessorProcessAtLeastOnce(t *testing.T) {
 
 	topic := topicPrefix + strconv.FormatInt(rand.Int63(), 16)
 
-	want, err := setupKafka(topic, messagesFile)
+	want, err := setupKafka(topic)
 	if err != nil {
 		t.Fatalf("error setting up kafka: %v", err)
 	}

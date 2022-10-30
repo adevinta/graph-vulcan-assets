@@ -29,7 +29,7 @@ Start the testing infrastructure:
 Execute the tests:
 
 ```
-go test -count=1 -cover ./...
+go test -count 1 -p 1 -cover ./...
 ```
 
 Stop the testing infrastructure:

@@ -8,5 +8,7 @@ cd "$(dirname $0)/.."
 # Start testing infrastructure (i.e. kafka and graph-asset-inventory-api).
 ./_script/setup
 
-# Disable the test cache (-count=1), so tests always connect to kafka.
-go test -count=1 "$@"
+# Disable the test cache (-count 1), so tests always connect to the testing
+# infrastructure. Also, do not run multiple test programs in parallel (-p 1),
+# so there are no race conditions between tests in different packages.
+exec go test -count 1 -p 1 "$@"

@@ -36,13 +36,13 @@ func setupKafka() error {
 
 	prod, err := kafka.NewProducer(cfg)
 	if err != nil {
-		return fmt.Errorf("error creating producer: %v", err)
+		return fmt.Errorf("error creating producer: %w", err)
 	}
 	defer prod.Close()
 
 	admin, err := kafka.NewAdminClientFromProducer(prod)
 	if err != nil {
-		return fmt.Errorf("error creating admin client: %v", err)
+		return fmt.Errorf("error creating admin client: %w", err)
 	}
 
 	adminOpts := []kafka.DeleteTopicsAdminOption{
@@ -53,13 +53,13 @@ func setupKafka() error {
 	defer cancel()
 
 	if _, err := admin.DeleteTopics(ctx, []string{vulcan.AssetsEntityName}, adminOpts...); err != nil {
-		return fmt.Errorf("error deleting topic: %v", err)
+		return fmt.Errorf("error deleting topic: %w", err)
 	}
 
 	msgs := streamtest.Parse(messagesFile)
 	for _, msg := range msgs {
 		if err := produceMessage(prod, vulcan.AssetsEntityName, msg); err != nil {
-			return fmt.Errorf("error producing message: %v", err)
+			return fmt.Errorf("error producing message: %w", err)
 		}
 	}
 
@@ -89,7 +89,7 @@ func produceMessage(prod *kafka.Producer, topic string, msg stream.Message) erro
 	}
 
 	if err := prod.Produce(kmsg, events); err != nil {
-		return fmt.Errorf("failed to produce message: %v", err)
+		return fmt.Errorf("failed to produce message: %w", err)
 	}
 
 	e := <-events
@@ -109,7 +109,7 @@ func resetInventory() error {
 		settings.LogVerbosity = gremlingo.Off
 	})
 	if err != nil {
-		return fmt.Errorf("could not connect to Neptune: %v", err)
+		return fmt.Errorf("could not connect to gremlin-server: %w", err)
 	}
 	defer conn.Close()
 
@@ -354,7 +354,7 @@ var (
 	}
 )
 
-func TestMain(t *testing.T) {
+func TestRun(t *testing.T) {
 	if err := setupKafka(); err != nil {
 		t.Fatalf("error setting up kafka: %v", err)
 	}
