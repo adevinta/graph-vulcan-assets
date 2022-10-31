@@ -162,20 +162,20 @@ func upsertAsset(icli inventory.Client, payload vulcan.AssetPayload) (inventory.
 func upsertTeam(icli inventory.Client, payload vulcan.AssetPayload) (inventory.TeamResp, error) {
 	vteam := payload.Team
 
-	teams, err := icli.Teams(vteam.Id, inventory.Pagination{})
+	teams, err := icli.Teams(vteam.ID, inventory.Pagination{})
 	if err != nil {
 		return inventory.TeamResp{}, fmt.Errorf("could not get teams: %w", err)
 	}
 
 	switch len(teams) {
 	case 1:
-		team, err := icli.UpdateTeam(teams[0].ID, vteam.Id, vteam.Name)
+		team, err := icli.UpdateTeam(teams[0].ID, vteam.ID, vteam.Name)
 		if err != nil {
 			return inventory.TeamResp{}, fmt.Errorf("could not update team: %w", err)
 		}
 		return team, nil
 	case 0:
-		team, err := icli.CreateTeam(vteam.Id, vteam.Name)
+		team, err := icli.CreateTeam(vteam.ID, vteam.Name)
 		if err != nil {
 			return inventory.TeamResp{}, fmt.Errorf("could not create team: %w", err)
 		}

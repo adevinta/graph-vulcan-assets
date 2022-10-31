@@ -14,7 +14,7 @@ func TestLogLevel(t *testing.T) {
 	setMockLogger(fmt.Sprintf("%shello: %s", msg2, msg3), false)
 
 	level := "info"
-	SetLevel(level)
+	mustSetLevel(level)
 	if GetLevel() != level {
 		t.Fatalf("Expected %q, got %q", level, GetLevel())
 	}
@@ -27,9 +27,9 @@ func TestLogLevel(t *testing.T) {
 
 func TestDisable(t *testing.T) {
 	setMockLogger("Starting server...", false)
-	SetLevel("debug")
+	mustSetLevel("debug")
 	Debug.Printf("Starting server...")
-	SetLevel("disabled")
+	mustSetLevel("disabled")
 	Error.Printf("Important stuff you'll miss!")
 	globals().defaultLogger.(*mockLogger).Verify(t)
 }
@@ -39,14 +39,14 @@ func TestFatal(t *testing.T) {
 
 	setMockLogger(msg, true)
 
-	SetLevel("error")
+	mustSetLevel("error")
 	Info.Fatal(msg)
 
 	globals().defaultLogger.(*mockLogger).Verify(t)
 }
 
 func TestAt(t *testing.T) {
-	SetLevel("info")
+	mustSetLevel("info")
 
 	if At("debug") {
 		t.Errorf("Debug is expected to be disabled when level is info")
@@ -59,6 +59,12 @@ func TestAt(t *testing.T) {
 func TestDisableDefaultLoggers(t *testing.T) {
 	SetOutput(nil) // disable default loggers.
 	Print("not printed")
+}
+
+func mustSetLevel(level string) {
+	if err := SetLevel(level); err != nil {
+		panic(err)
+	}
 }
 
 func setMockLogger(expected string, fatalExpected bool) {

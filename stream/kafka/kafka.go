@@ -23,7 +23,9 @@ type AloProcessor struct {
 func NewAloProcessor(config map[string]any) (AloProcessor, error) {
 	kconfig := make(kafka.ConfigMap)
 	for k, v := range config {
-		kconfig.SetKey(k, v)
+		if err := kconfig.SetKey(k, v); err != nil {
+			return AloProcessor{}, fmt.Errorf("could not set config key: %w", err)
+		}
 	}
 
 	// Ensure at-least-once semantics.

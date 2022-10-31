@@ -26,22 +26,22 @@ const (
 // AssetPayload represents the "assetPayload" model as defined by the Vulcan
 // async API.
 type AssetPayload struct {
-	Id          string
-	Team        Team
-	Alias       string
-	Rolfp       string
-	Scannable   bool
-	AssetType   AssetType
-	Identifier  string
-	Annotations []Annotation
+	ID          string       `json:"Id"`
+	Team        Team         `json:"Team"`
+	Alias       string       `json:"Alias"`
+	Rolfp       string       `json:"Rolfp"`
+	Scannable   bool         `json:"Scannable"`
+	AssetType   AssetType    `json:"AssetType"`
+	Identifier  string       `json:"Identifier"`
+	Annotations []Annotation `json:"Annotations"`
 }
 
 // Team represents the "team" model as defined by the Vulcan async API.
 type Team struct {
-	Id          string
-	Name        string
-	Description string
-	Tag         string
+	ID          string `json:"Id"`
+	Name        string `json:"Name"`
+	Description string `json:"Description"`
+	Tag         string `json:"Tag"`
 }
 
 // AssetType represents the "assetType" model as defined by the Vulcan async
@@ -51,16 +51,16 @@ type AssetType string
 // Annotation represents the "annotation" model as defined by the Vulcan async
 // API.
 type Annotation struct {
-	Key   string
-	Value string
+	Key   string `json:"Key"`
+	Value string `json:"Value"`
 }
 
 // AssetMetadata represents the "assetMetadata" model as defined by the Vulcan
 // async API.
 type AssetMetadata struct {
-	Version    string
-	Type       AssetType
-	Identifier string
+	Version    string    `json:"Version"`
+	Type       AssetType `json:"Type"`
+	Identifier string    `json:"Identifier"`
 }
 
 // Client is a Vulcan async API client.

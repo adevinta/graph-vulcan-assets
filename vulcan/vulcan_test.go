@@ -12,18 +12,18 @@ import (
 )
 
 type asset struct {
-	Id      string
+	ID      string
 	Payload AssetPayload
 	IsNil   bool
 }
 
 var testdataValidAssets = []asset{
 	{
-		Id: "9a1a0332-88b6-4edc-aa37-50adc1ad96da/f110cf6f-803d-442c-9b42-f6d8cd962bf2",
+		ID: "9a1a0332-88b6-4edc-aa37-50adc1ad96da/f110cf6f-803d-442c-9b42-f6d8cd962bf2",
 		Payload: AssetPayload{
-			Id: "f110cf6f-803d-442c-9b42-f6d8cd962bf2",
+			ID: "f110cf6f-803d-442c-9b42-f6d8cd962bf2",
 			Team: Team{
-				Id:          "9a1a0332-88b6-4edc-aa37-50adc1ad96da",
+				ID:          "9a1a0332-88b6-4edc-aa37-50adc1ad96da",
 				Name:        "Team name 0",
 				Description: "Team description 0",
 				Tag:         "a76e1486",
@@ -47,11 +47,11 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		Id: "9a86666e-ef3a-4630-845d-d3c61e167931/d2e37146-61d7-4010-aa25-2335c385a980",
+		ID: "9a86666e-ef3a-4630-845d-d3c61e167931/d2e37146-61d7-4010-aa25-2335c385a980",
 		Payload: AssetPayload{
-			Id: "d2e37146-61d7-4010-aa25-2335c385a980",
+			ID: "d2e37146-61d7-4010-aa25-2335c385a980",
 			Team: Team{
-				Id:          "9a86666e-ef3a-4630-845d-d3c61e167931",
+				ID:          "9a86666e-ef3a-4630-845d-d3c61e167931",
 				Name:        "Team name 1",
 				Description: "Team description 1",
 				Tag:         "f0eac043",
@@ -75,11 +75,11 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		Id: "a86f4f99-a75c-436a-915d-905b825906d3/4ab22e34-889e-4c35-8ef2-4411bd162636",
+		ID: "a86f4f99-a75c-436a-915d-905b825906d3/4ab22e34-889e-4c35-8ef2-4411bd162636",
 		Payload: AssetPayload{
-			Id: "4ab22e34-889e-4c35-8ef2-4411bd162636",
+			ID: "4ab22e34-889e-4c35-8ef2-4411bd162636",
 			Team: Team{
-				Id:          "a86f4f99-a75c-436a-915d-905b825906d3",
+				ID:          "a86f4f99-a75c-436a-915d-905b825906d3",
 				Name:        "Team name 2",
 				Description: "Team description 2",
 				Tag:         "6deacae3",
@@ -103,11 +103,11 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		Id: "32c3eb6a-189f-439c-b921-56ed27fa5c4a/4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
+		ID: "32c3eb6a-189f-439c-b921-56ed27fa5c4a/4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
 		Payload: AssetPayload{
-			Id: "4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
+			ID: "4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
 			Team: Team{
-				Id:          "32c3eb6a-189f-439c-b921-56ed27fa5c4a",
+				ID:          "32c3eb6a-189f-439c-b921-56ed27fa5c4a",
 				Name:        "Team name 3",
 				Description: "Team description 3",
 				Tag:         "bffc5223",
@@ -131,7 +131,7 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		Id: "bdb2e4a3-5d86-46f8-aae0-b2cd3a56e230/15ae9294-e1ed-4615-8423-2b78e5d04b95",
+		ID: "bdb2e4a3-5d86-46f8-aae0-b2cd3a56e230/15ae9294-e1ed-4615-8423-2b78e5d04b95",
 		Payload: AssetPayload{
 			AssetType:  AssetType("DockerImage"),
 			Identifier: "nilvalue:latest",
@@ -142,19 +142,22 @@ var testdataValidAssets = []asset{
 
 func TestClientProcessAssets(t *testing.T) {
 	tests := []struct {
-		name string
-		msgs []stream.Message
-		want []asset
+		name       string
+		msgs       []stream.Message
+		wantAssets []asset
+		wantNilErr bool
 	}{
 		{
-			name: "valid assets",
-			msgs: streamtest.Parse("testdata/valid_assets.json"),
-			want: testdataValidAssets,
+			name:       "valid assets",
+			msgs:       streamtest.Parse("testdata/valid_assets.json"),
+			wantAssets: testdataValidAssets,
+			wantNilErr: true,
 		},
 		{
-			name: "malformed assets",
-			msgs: streamtest.Parse("testdata/malformed_assets.json"),
-			want: testdataValidAssets[:2],
+			name:       "malformed assets",
+			msgs:       streamtest.Parse("testdata/malformed_assets.json"),
+			wantAssets: testdataValidAssets[:2],
+			wantNilErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -163,12 +166,16 @@ func TestClientProcessAssets(t *testing.T) {
 			cli := NewClient(mp)
 
 			var got []asset
-			cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
+			err := cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
 				got = append(got, asset{id, payload, isNil})
 				return nil
 			})
 
-			if diff := cmp.Diff(tt.want, got); diff != "" {
+			if (err == nil) != tt.wantNilErr {
+				t.Errorf("unexpected error: wantNilErr=%v got=%v", tt.wantNilErr, err)
+			}
+
+			if diff := cmp.Diff(tt.wantAssets, got); diff != "" {
 				t.Errorf("asset mismatch (-want +got):\n%v", diff)
 			}
 		})
@@ -186,13 +193,15 @@ func TestClientProcessAssetsError(t *testing.T) {
 	mp := streamtest.NewMockProcessor(streamtest.Parse("testdata/valid_assets.json"))
 	cli := NewClient(mp)
 
+	wantErr := errors.New("error")
+
 	var (
 		got []asset
 		ctr int
 	)
-	cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
+	err := cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
 		if ctr >= n {
-			return errors.New("error")
+			return wantErr
 		}
 
 		got = append(got, asset{id, payload, isNil})
@@ -200,6 +209,10 @@ func TestClientProcessAssetsError(t *testing.T) {
 
 		return nil
 	})
+
+	if err != wantErr {
+		t.Errorf("error mismatch: want=%v got=%v", wantErr, err)
+	}
 
 	if diff := cmp.Diff(testdataValidAssets[:n], got); diff != "" {
 		t.Errorf("asset mismatch (-want +got):\n%v", diff)

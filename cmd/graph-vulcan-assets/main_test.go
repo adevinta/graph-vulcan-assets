@@ -115,7 +115,7 @@ func resetInventory() error {
 
 	g := gremlingo.Traversal_().WithRemote(conn)
 
-	g.V().Not(gremlingo.T__.HasLabel("Universe")).Drop().Next()
+	<-g.V().Not(gremlingo.T__.HasLabel("Universe")).Drop().Iterate()
 
 	return nil
 }

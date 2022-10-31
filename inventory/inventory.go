@@ -28,7 +28,7 @@ var (
 
 	// Unexpired is the [time.Time] expiration assigned to unexpired
 	// entities.
-	Unexpired time.Time = *strtime("9999-12-12T23:59:59Z")
+	Unexpired = *strtime("9999-12-12T23:59:59Z")
 )
 
 // InvalidStatusError is returned when a call to an endpoint of the Graph Asset
@@ -401,7 +401,6 @@ func (cli Client) Assets(typ, identifier string, validAt time.Time, pag Paginati
 	}
 
 	return assets, nil
-
 }
 
 // CreateAsset creates an asset with the given type, identifier and expiration.
