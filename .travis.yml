@@ -1,0 +1,38 @@
+language: go
+go:
+- "1.19"
+
+services:
+  - docker
+
+env:
+  global:
+    - LOCAL_IMAGE="graph-vulcan-assets:local"
+    - DEV_IMAGE="purpleteam/graph-vulcan-assets-dev:${TRAVIS_COMMIT}"
+    - RELEASE_IMAGE="adevinta/graph-vulcan-assets:${TRAVIS_TAG}"
+
+before_script:
+  - go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
+
+jobs:
+  include:
+    # "test" stage.
+    - stage: "test"
+      name: "test"
+      script: ./_script/test -cover ./...
+    - name: "lint"
+      script: ./_script/lint ./...
+
+    # "deploy" stage.
+    - stage: "deploy"
+      script: docker build -t "${LOCAL_IMAGE}" .
+      deploy:
+        - provider: script
+          script: ./_script/cideploy "${LOCAL_IMAGE}" "${RELEASE_IMAGE}"
+          on:
+            tags: true
+        - provider: script
+          script: ./_script/cideploy "${LOCAL_IMAGE}" "${DEV_IMAGE}"
+          on:
+            all_branches: true
+            tags: false
