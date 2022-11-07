@@ -18,8 +18,13 @@
     ]
   },
   {
-    "key": "key",
-    "value": "value"
+    "key": "e363e9a0-2e0d-465d-99ea-5851dd962e92/78d51da2-0d58-4e1c-a314-be07047bf254",
+    "value": "{\"Id\":\"78d51da2-0d58-4e1c-a314-be07047bf254\",\"Team\":{\"Id\":\"e363e9a0-2e0d-465d-99ea-5851dd962e92\",\"Name\":\"Team name bad version\",\"Description\":\"Team description bad version\",\"Tag\":\"3925ad18\"},\"Alias\":\"Asset alias bad version\",\"Rolfp\":\"R:1/O:1/L:1/F:1/P:1+S:1\",\"Scannable\":true,\"AssetType\":\"DockerImage\",\"Identifier\":\"golang:latest\",\"Annotations\":[{\"Key\":\"annotation bad version/0\",\"Value\":\"value bad version/0\"},{\"Key\":\"annotation bad version/1\",\"Value\":\"value bad version/1\"}]}",
+    "metadata": [
+      { "key": "version", "value": "1.2.3" },
+      { "key": "type", "value": "DockerImage" },
+      { "key": "identifier", "value": "golang:latest" }
+    ]
   },
   {
     "key": "a86f4f99-a75c-436a-915d-905b825906d3/4ab22e34-889e-4c35-8ef2-4411bd162636",

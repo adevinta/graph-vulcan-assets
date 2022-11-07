@@ -23,6 +23,8 @@ const (
 	AssetsEntityName = "assets-v0"
 )
 
+var ErrUnsupportedVersion = errors.New("unsupported version")
+
 // AssetPayload represents the "assetPayload" model as defined by the Vulcan
 // async API.
 type AssetPayload struct {
@@ -89,8 +91,7 @@ func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
 		}
 
 		if !supportedVersion(version) {
-			// Do not process asset on version mismatch.
-			return nil
+			return ErrUnsupportedVersion
 		}
 
 		id := string(msg.Key)

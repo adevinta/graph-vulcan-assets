@@ -157,6 +157,12 @@ func TestClientProcessAssets(t *testing.T) {
 			wantAssets: testdataValidAssets[:2],
 			wantNilErr: false,
 		},
+		{
+			name:       "unsupported version",
+			msgs:       streamtest.MustParse("testdata/unsupported_version.json"),
+			wantAssets: testdataValidAssets[:2],
+			wantNilErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
