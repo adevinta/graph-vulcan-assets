@@ -5,8 +5,8 @@ services:
     image: busybox
     depends_on:
       # The service_healthy condition is not honored by "docker-compose run" in
-      # all docker-compose versions, but it is respected if the conditions is
-      # in a transitive dependency. Thus, we have created an intermediate
+      # all docker-compose versions, but it is respected if the condition is in
+      # a transitive dependency. Thus, we have created an intermediate
       # dependency with all the required conditions.
       - healthchecks
     entrypoint: ["echo", "setup done"]
