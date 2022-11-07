@@ -1,4 +1,4 @@
-// graph-vulcan-assets is a consumer of the Vulcan Asynchonous API that keeps
+// graph-vulcan-assets is a consumer of the Vulcan Asynchronous API that keeps
 // in sync the Security Graph Asset Inventory.
 package main
 
