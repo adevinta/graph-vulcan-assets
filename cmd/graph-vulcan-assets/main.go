@@ -23,6 +23,12 @@ import (
 // AWS account it belongs to.
 const awsAccountAnnotation = "discovery/aws/account"
 
+const (
+	defaultLogLevel      = "info"
+	defaultRetryDuration = 5 * time.Second
+	defaultKafkaGroupID  = "graph-vulcan-assets"
+)
+
 func main() {
 	cfg, err := readConfig()
 	if err != nil {
@@ -36,22 +42,22 @@ func main() {
 
 // run is invoked by main and does the actual work.
 func run(ctx context.Context, cfg config) error {
-	if err := log.SetLevel(cfg.logLevel); err != nil {
+	if err := log.SetLevel(cfg.LogLevel); err != nil {
 		return fmt.Errorf("error setting log level: %w", err)
 	}
 
 	kcfg := map[string]any{
-		"bootstrap.servers":  cfg.kafkaBootstrapServers,
-		"group.id":           cfg.kafkaGroupID,
+		"bootstrap.servers":  cfg.KafkaBootstrapServers,
+		"group.id":           cfg.KafkaGroupID,
 		"auto.offset.reset":  "earliest",
 		"enable.auto.commit": false,
 	}
 
-	if cfg.kafkaUsername != "" && cfg.kafkaPassword != "" {
+	if cfg.KafkaUsername != "" && cfg.KafkaPassword != "" {
 		kcfg["security.protocol"] = "sasl_ssl"
 		kcfg["sasl.mechanisms"] = "SCRAM-SHA-256"
-		kcfg["sasl.username"] = cfg.kafkaUsername
-		kcfg["sasl.password"] = cfg.kafkaPassword
+		kcfg["sasl.username"] = cfg.KafkaUsername
+		kcfg["sasl.password"] = cfg.KafkaPassword
 	}
 
 	proc, err := kafka.NewAloProcessor(kcfg)
@@ -62,7 +68,7 @@ func run(ctx context.Context, cfg config) error {
 
 	vcli := vulcan.NewClient(proc)
 
-	icli, err := inventory.NewClient(cfg.inventoryEndpoint, cfg.inventoryInsecureSkipVerify)
+	icli, err := inventory.NewClient(cfg.InventoryEndpoint, cfg.InventoryInsecureSkipVerify)
 	if err != nil {
 		return fmt.Errorf("error creating asset inventory client: %w", err)
 	}
@@ -71,14 +77,14 @@ func run(ctx context.Context, cfg config) error {
 		log.Info.Println("graph-vulcan-assets: processing assets")
 		if err := vcli.ProcessAssets(ctx, assetHandler(icli)); err != nil {
 			err = fmt.Errorf("error processing assets: %v", err)
-			if cfg.retryDuration == 0 {
+			if cfg.RetryDuration == 0 {
 				return err
 			}
 			log.Error.Printf("graph-vulcan-assets: %v", err)
 		}
 
-		log.Info.Printf("graph-vulcan-assets: retrying in %v", cfg.retryDuration)
-		time.Sleep(cfg.retryDuration)
+		log.Info.Printf("graph-vulcan-assets: retrying in %v", cfg.RetryDuration)
+		time.Sleep(cfg.RetryDuration)
 	}
 }
 
@@ -335,59 +341,64 @@ func parseMessageID(id string) (teamID, assetID string, err error) {
 
 // config contains the configuration of the command.
 type config struct {
-	logLevel                    string
-	retryDuration               time.Duration
-	kafkaBootstrapServers       string
-	kafkaGroupID                string
-	kafkaUsername               string
-	kafkaPassword               string
-	inventoryEndpoint           string
-	inventoryInsecureSkipVerify bool
+	LogLevel                    string
+	RetryDuration               time.Duration
+	KafkaBootstrapServers       string
+	KafkaGroupID                string
+	KafkaUsername               string
+	KafkaPassword               string
+	InventoryEndpoint           string
+	InventoryInsecureSkipVerify bool
 }
 
 // readConfig reads the configuration from the environment.
 func readConfig() (config, error) {
-	// Log level.
-	logLevel := os.Getenv("LOG_LEVEL")
-	if logLevel == "" {
-		logLevel = "info"
-	}
-
-	retryDuration, err := time.ParseDuration(os.Getenv("RETRY_DURATION"))
-	if err != nil {
-		return config{}, fmt.Errorf("invalid retry duration: %w", err)
-	}
-
-	// Kafka configuration.
+	// Required config.
 	kafkaBootstrapServers := os.Getenv("KAFKA_BOOTSTRAP_SERVERS")
 	if kafkaBootstrapServers == "" {
 		return config{}, errors.New("missing kafka bootstrap servers")
 	}
-	kafkaGroupID := os.Getenv("KAFKA_GROUP_ID")
-	if kafkaGroupID == "" {
-		return config{}, errors.New("missing kafka group ID")
-	}
-	kafkaUsername := os.Getenv("KAFKA_USERNAME")
-	kafkaPassword := os.Getenv("KAFKA_PASSWORD")
 
-	// Asset Inventory configuration.
 	inventoryEndpoint := os.Getenv("INVENTORY_ENDPOINT")
 	if inventoryEndpoint == "" {
 		return config{}, errors.New("missing asset inventory endpoint")
 	}
 
-	inventoryInsecureSkipVerifyEnv := os.Getenv("INVENTORY_INSECURE_SKIP_VERIFY")
-	inventoryInsecureSkipVerify := inventoryInsecureSkipVerifyEnv == "1"
+	// Optional config.
+	logLevel := defaultLogLevel
+	if level := os.Getenv("LOG_LEVEL"); level != "" {
+		logLevel = level
+	}
+
+	retryDuration := defaultRetryDuration
+	if rd := os.Getenv("RETRY_DURATION"); rd != "" {
+		var err error
+
+		retryDuration, err = time.ParseDuration(rd)
+		if err != nil {
+			return config{}, fmt.Errorf("invalid retry duration: %w", err)
+		}
+	}
+
+	kafkaGroupID := defaultKafkaGroupID
+	if id := os.Getenv("KAFKA_GROUP_ID"); id != "" {
+		kafkaGroupID = id
+	}
+
+	kafkaUsername := os.Getenv("KAFKA_USERNAME")
+	kafkaPassword := os.Getenv("KAFKA_PASSWORD")
+
+	inventoryInsecureSkipVerify := os.Getenv("INVENTORY_INSECURE_SKIP_VERIFY") == "1"
 
 	cfg := config{
-		logLevel:                    logLevel,
-		retryDuration:               retryDuration,
-		kafkaBootstrapServers:       kafkaBootstrapServers,
-		kafkaGroupID:                kafkaGroupID,
-		kafkaUsername:               kafkaUsername,
-		kafkaPassword:               kafkaPassword,
-		inventoryEndpoint:           inventoryEndpoint,
-		inventoryInsecureSkipVerify: inventoryInsecureSkipVerify,
+		LogLevel:                    logLevel,
+		RetryDuration:               retryDuration,
+		KafkaBootstrapServers:       kafkaBootstrapServers,
+		KafkaGroupID:                kafkaGroupID,
+		KafkaUsername:               kafkaUsername,
+		KafkaPassword:               kafkaPassword,
+		InventoryEndpoint:           inventoryEndpoint,
+		InventoryInsecureSkipVerify: inventoryInsecureSkipVerify,
 	}
 
 	return cfg, nil

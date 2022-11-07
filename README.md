@@ -38,20 +38,28 @@ _script/clean
 
 ## Environment Variables
 
-These are the required environment variables:
+The following environment variables are the **required**:
 
 | Variable | Description | Example |
 | --- | --- | --- |
-| `LOG_LEVEL` | Log level. Valid values: info, debug, error, disabled | `info` |
-| `RETRY_DURATION` | Time between retries if the stream processor fails | `5s` |
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | `kafka.example.com:9092` |
-| `KAFKA_GROUP_ID` | Kafka consumer group ID | `graph-vulcan-assets` |
-| `KAFKA_USERNAME` | Kafka username | `username` |
-| `KAFKA_PASSWORD` | kafka password | `password` |
 | `INVENTORY_ENDPOINT` | Endpoint of the Security Graph Asset Inventory | `https://inventory.example.com` |
+
+The following environment variables are **optional**:
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `LOG_LEVEL` | Log level. Valid values: `info`, `debug`, `error`, `disabled` | `info` |
+| `RETRY_DURATION` | Time between retries if the stream processor fails. It the value is `0` the command exits on error | `5s` |
+| `KAFKA_GROUP_ID` | Kafka consumer group ID | `graph-vulcan-assets` |
+| `KAFKA_USERNAME` | Kafka username | |
+| `KAFKA_PASSWORD` | kafka password | |
 | `INVENTORY_INSECURE_SKIP_VERIFY` | If the value is `1` then skip TLS verification | `0` |
 
-The directory `/_env` in this repository contains some example configurations.
+If both `KAFKA_USERNAME` and `KAFKA_PASSWORD` are not specified, plaintext
+un-authenticated mode is used.
+
+The directory `_env` in this repository contains some example configurations.
 
 ## Contributing
 

@@ -364,14 +364,14 @@ func TestRun(t *testing.T) {
 	}
 
 	cfg := config{
-		logLevel:                    "disabled",
-		retryDuration:               0,
-		kafkaBootstrapServers:       "127.0.0.1:9092",
-		kafkaGroupID:                "cmd-graph-vulcan-assets-main-test",
-		kafkaUsername:               "",
-		kafkaPassword:               "",
-		inventoryEndpoint:           "http://127.0.0.1:8000",
-		inventoryInsecureSkipVerify: true,
+		LogLevel:                    "disabled",
+		RetryDuration:               0,
+		KafkaBootstrapServers:       "127.0.0.1:9092",
+		KafkaGroupID:                "cmd-graph-vulcan-assets-main-test",
+		KafkaUsername:               "",
+		KafkaPassword:               "",
+		InventoryEndpoint:           "http://127.0.0.1:8000",
+		InventoryInsecureSkipVerify: true,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -383,7 +383,7 @@ func TestRun(t *testing.T) {
 		t.Logf("error processing messages: %v", err)
 	}
 
-	icli, err := inventory.NewClient(cfg.inventoryEndpoint, cfg.inventoryInsecureSkipVerify)
+	icli, err := inventory.NewClient(cfg.InventoryEndpoint, cfg.InventoryInsecureSkipVerify)
 	if err != nil {
 		t.Fatalf("could not create inventory client: %v", err)
 	}
@@ -499,4 +499,99 @@ func findTeam(teams []inventory.TeamResp, id string) (inventory.TeamResp, error)
 		}
 	}
 	return inventory.TeamResp{}, errors.New("not found")
+}
+
+func TestReadConfig(t *testing.T) {
+	tests := []struct {
+		name       string
+		env        map[string]string
+		wantConfig config
+		wantNilErr bool
+	}{
+		{
+			name: "set required config",
+			env: map[string]string{
+				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":      "http://127.0.0.1:8000",
+			},
+			wantConfig: config{
+				LogLevel:                    defaultLogLevel,
+				RetryDuration:               defaultRetryDuration,
+				KafkaBootstrapServers:       "127.0.0.1:9092",
+				KafkaGroupID:                defaultKafkaGroupID,
+				KafkaUsername:               "",
+				KafkaPassword:               "",
+				InventoryEndpoint:           "http://127.0.0.1:8000",
+				InventoryInsecureSkipVerify: false,
+			},
+			wantNilErr: true,
+		},
+		{
+			name: "set optional config",
+			env: map[string]string{
+				"LOG_LEVEL":                      "debug",
+				"RETRY_DURATION":                 "30s",
+				"KAFKA_BOOTSTRAP_SERVERS":        "127.0.0.1:9092",
+				"KAFKA_GROUP_ID":                 "group-id",
+				"KAFKA_USERNAME":                 "username",
+				"KAFKA_PASSWORD":                 "password",
+				"INVENTORY_ENDPOINT":             "http://127.0.0.1:8000",
+				"INVENTORY_INSECURE_SKIP_VERIFY": "1",
+			},
+			wantConfig: config{
+				LogLevel:                    "debug",
+				RetryDuration:               30 * time.Second,
+				KafkaBootstrapServers:       "127.0.0.1:9092",
+				KafkaGroupID:                "group-id",
+				KafkaUsername:               "username",
+				KafkaPassword:               "password",
+				InventoryEndpoint:           "http://127.0.0.1:8000",
+				InventoryInsecureSkipVerify: true,
+			},
+			wantNilErr: true,
+		},
+		{
+			name: "missing KAFKA_BOOTSTRAP_SERVERS",
+			env: map[string]string{
+				"INVENTORY_ENDPOINT": "http://127.0.0.1:8000",
+			},
+			wantConfig: config{},
+			wantNilErr: false,
+		},
+		{
+			name: "missing INVENTORY_ENDPOINT",
+			env: map[string]string{
+				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
+			},
+			wantConfig: config{},
+			wantNilErr: false,
+		},
+		{
+			name: "invalid RETRY_DURATION",
+			env: map[string]string{
+				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":      "http://127.0.0.1:8000",
+				"RETRY_DURATION":          "30x",
+			},
+			wantConfig: config{},
+			wantNilErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for k, v := range tt.env {
+				t.Setenv(k, v)
+			}
+
+			config, err := readConfig()
+			if (err == nil) != tt.wantNilErr {
+				t.Errorf("unexpected error: wantNilErr=%v, got=%v", tt.wantNilErr, err)
+			}
+
+			if diff := cmp.Diff(tt.wantConfig, config); diff != "" {
+				t.Errorf("messages mismatch (-want +got):\n%v", diff)
+			}
+		})
+	}
 }
