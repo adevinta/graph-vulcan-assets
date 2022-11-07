@@ -85,7 +85,7 @@ func TestParse(t *testing.T) {
 				}
 			}()
 
-			got := Parse(tt.filename)
+			got := MustParse(tt.filename)
 			if diff := cmp.Diff(tt.want, got); diff != "" {
 				t.Errorf("asset mismatch (-want +got):\n%v", diff)
 			}

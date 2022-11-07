@@ -9,9 +9,9 @@ import (
 	"github.com/adevinta/graph-vulcan-assets/stream"
 )
 
-// Parse parses a json file with messages and returns them. It panics if the
-// file cannot be parsed.
-func Parse(filename string) []stream.Message {
+// MustParse parses a json file with messages and returns them. It panics if
+// the file cannot be parsed.
+func MustParse(filename string) []stream.Message {
 	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)

@@ -56,7 +56,7 @@ func setupKafka() error {
 		return fmt.Errorf("error deleting topic: %w", err)
 	}
 
-	msgs := streamtest.Parse(messagesFile)
+	msgs := streamtest.MustParse(messagesFile)
 	for _, msg := range msgs {
 		if err := produceMessage(prod, vulcan.AssetsEntityName, msg); err != nil {
 			return fmt.Errorf("error producing message: %w", err)

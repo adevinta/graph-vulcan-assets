@@ -147,13 +147,13 @@ func TestClientProcessAssets(t *testing.T) {
 	}{
 		{
 			name:       "valid assets",
-			msgs:       streamtest.Parse("testdata/valid_assets.json"),
+			msgs:       streamtest.MustParse("testdata/valid_assets.json"),
 			wantAssets: testdataValidAssets,
 			wantNilErr: true,
 		},
 		{
 			name:       "malformed assets",
-			msgs:       streamtest.Parse("testdata/malformed_assets.json"),
+			msgs:       streamtest.MustParse("testdata/malformed_assets.json"),
 			wantAssets: testdataValidAssets[:2],
 			wantNilErr: false,
 		},
@@ -188,7 +188,7 @@ func TestClientProcessAssetsError(t *testing.T) {
 		t.Fatal("n > testdata length")
 	}
 
-	mp := streamtest.NewMockProcessor(streamtest.Parse("testdata/valid_assets.json"))
+	mp := streamtest.NewMockProcessor(streamtest.MustParse("testdata/valid_assets.json"))
 	cli := NewClient(mp)
 
 	wantErr := errors.New("error")

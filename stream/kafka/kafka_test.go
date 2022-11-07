@@ -43,7 +43,7 @@ func setupKafka(topic string) (msgs []stream.Message, err error) {
 	}
 	defer prod.Close()
 
-	msgs = streamtest.Parse(messagesFile)
+	msgs = streamtest.MustParse(messagesFile)
 	for _, msg := range msgs {
 		if err := produceMessage(prod, topic, msg); err != nil {
 			return nil, fmt.Errorf("error producing message: %w", err)
