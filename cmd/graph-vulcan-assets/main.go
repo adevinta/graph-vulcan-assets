@@ -75,6 +75,14 @@ func run(ctx context.Context, cfg config) error {
 
 	for {
 		log.Info.Println("graph-vulcan-assets: processing assets")
+
+		select {
+		case <-ctx.Done():
+			log.Info.Println("graph-vulcan-assets: context is done")
+			return nil
+		default:
+		}
+
 		if err := vcli.ProcessAssets(ctx, assetHandler(icli)); err != nil {
 			err = fmt.Errorf("error processing assets: %v", err)
 			if cfg.RetryDuration == 0 {
