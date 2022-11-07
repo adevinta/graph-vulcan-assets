@@ -342,7 +342,7 @@ func (cli Client) UpdateTeam(id, identifier, name string) (TeamResp, error) {
 
 	var data bytes.Buffer
 	if err := json.NewEncoder(&data).Encode(payload); err != nil {
-		return TeamResp{}, err
+		return TeamResp{}, fmt.Errorf("invalid payload: %w", err)
 	}
 
 	u := cli.urlTeamsID(id)
@@ -383,7 +383,7 @@ func (cli Client) Assets(typ, identifier string, validAt time.Time, pag Paginati
 	u := cli.urlAssets(typ, identifier, validAt, pag)
 	resp, err := cli.httpcli.Get(u)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("HTTP request error: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -460,7 +460,7 @@ func (cli Client) UpdateAsset(id, typ, identifier string, timestamp, expiration 
 
 	var data bytes.Buffer
 	if err := json.NewEncoder(&data).Encode(payload); err != nil {
-		return AssetResp{}, err
+		return AssetResp{}, fmt.Errorf("invalid payload: %w", err)
 	}
 
 	u := cli.urlAssetsID(id)
@@ -535,7 +535,7 @@ func (cli Client) UpsertParent(childID, parentID string, timestamp, expiration t
 
 	var data bytes.Buffer
 	if err := json.NewEncoder(&data).Encode(payload); err != nil {
-		return ParentOfResp{}, err
+		return ParentOfResp{}, fmt.Errorf("invalid payload: %w", err)
 	}
 
 	u := cli.urlParentsID(childID, parentID)
@@ -639,7 +639,7 @@ func (cli Client) UpsertOwner(assetID, teamID string, startTime, endTime time.Ti
 
 	var data bytes.Buffer
 	if err := json.NewEncoder(&data).Encode(payload); err != nil {
-		return OwnsResp{}, err
+		return OwnsResp{}, fmt.Errorf("invalid payload: %w", err)
 	}
 
 	u := cli.urlOwnersID(assetID, teamID)
