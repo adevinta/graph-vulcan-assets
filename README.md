@@ -51,7 +51,7 @@ The following environment variables are **optional**:
 | Variable | Description | Default |
 | --- | --- | --- |
 | `LOG_LEVEL` | Log level. Valid values: `info`, `debug`, `error`, `disabled` | `info` |
-| `RETRY_DURATION` | Time between retries if the stream processor fails. It the value is `0` the command exits on error | `5s` |
+| `RETRY_DURATION` | Time between retries if the stream processor fails. If the value is `0` the command exits on error | `5s` |
 | `KAFKA_GROUP_ID` | Kafka consumer group ID | `graph-vulcan-assets` |
 | `KAFKA_USERNAME` | Kafka username | |
 | `KAFKA_PASSWORD` | kafka password | |
