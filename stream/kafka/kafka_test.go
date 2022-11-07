@@ -50,10 +50,6 @@ func setupKafka(topic string) (msgs []stream.Message, err error) {
 		}
 	}
 
-	for prod.Flush(10000) > 0 {
-		// Waiting to flush outstanding messages.
-	}
-
 	return msgs, nil
 }
 

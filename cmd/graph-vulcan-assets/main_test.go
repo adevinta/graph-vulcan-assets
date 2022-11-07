@@ -63,10 +63,6 @@ func setupKafka() error {
 		}
 	}
 
-	for prod.Flush(10000) > 0 {
-		// Waiting to flush outstanding messages.
-	}
-
 	return nil
 }
 
