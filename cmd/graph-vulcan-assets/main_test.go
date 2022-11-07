@@ -370,6 +370,7 @@ func TestRun(t *testing.T) {
 		KafkaGroupID:                "cmd-graph-vulcan-assets-main-test",
 		KafkaUsername:               "",
 		KafkaPassword:               "",
+		AWSAccountAnnotationKey:     "discovery/aws/account",
 		InventoryEndpoint:           "http://127.0.0.1:8000",
 		InventoryInsecureSkipVerify: true,
 	}
@@ -511,8 +512,9 @@ func TestReadConfig(t *testing.T) {
 		{
 			name: "set required config",
 			env: map[string]string{
-				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
-				"INVENTORY_ENDPOINT":      "http://127.0.0.1:8000",
+				"KAFKA_BOOTSTRAP_SERVERS":    "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":         "http://127.0.0.1:8000",
+				"AWS_ACCOUNT_ANNOTATION_KEY": "discovery/aws/account",
 			},
 			wantConfig: config{
 				LogLevel:                    defaultLogLevel,
@@ -521,6 +523,7 @@ func TestReadConfig(t *testing.T) {
 				KafkaGroupID:                defaultKafkaGroupID,
 				KafkaUsername:               "",
 				KafkaPassword:               "",
+				AWSAccountAnnotationKey:     "discovery/aws/account",
 				InventoryEndpoint:           "http://127.0.0.1:8000",
 				InventoryInsecureSkipVerify: false,
 			},
@@ -535,6 +538,7 @@ func TestReadConfig(t *testing.T) {
 				"KAFKA_GROUP_ID":                 "group-id",
 				"KAFKA_USERNAME":                 "username",
 				"KAFKA_PASSWORD":                 "password",
+				"AWS_ACCOUNT_ANNOTATION_KEY":     "discovery/aws/account",
 				"INVENTORY_ENDPOINT":             "http://127.0.0.1:8000",
 				"INVENTORY_INSECURE_SKIP_VERIFY": "1",
 			},
@@ -545,6 +549,7 @@ func TestReadConfig(t *testing.T) {
 				KafkaGroupID:                "group-id",
 				KafkaUsername:               "username",
 				KafkaPassword:               "password",
+				AWSAccountAnnotationKey:     "discovery/aws/account",
 				InventoryEndpoint:           "http://127.0.0.1:8000",
 				InventoryInsecureSkipVerify: true,
 			},
@@ -553,7 +558,8 @@ func TestReadConfig(t *testing.T) {
 		{
 			name: "missing KAFKA_BOOTSTRAP_SERVERS",
 			env: map[string]string{
-				"INVENTORY_ENDPOINT": "http://127.0.0.1:8000",
+				"INVENTORY_ENDPOINT":         "http://127.0.0.1:8000",
+				"AWS_ACCOUNT_ANNOTATION_KEY": "discovery/aws/account",
 			},
 			wantConfig: config{},
 			wantNilErr: false,
@@ -561,7 +567,17 @@ func TestReadConfig(t *testing.T) {
 		{
 			name: "missing INVENTORY_ENDPOINT",
 			env: map[string]string{
+				"KAFKA_BOOTSTRAP_SERVERS":    "127.0.0.1:9092",
+				"AWS_ACCOUNT_ANNOTATION_KEY": "discovery/aws/account",
+			},
+			wantConfig: config{},
+			wantNilErr: false,
+		},
+		{
+			name: "missing AWS_ACCOUNT_ANNOTATION_KEY",
+			env: map[string]string{
 				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":      "http://127.0.0.1:8000",
 			},
 			wantConfig: config{},
 			wantNilErr: false,

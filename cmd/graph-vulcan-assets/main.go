@@ -19,10 +19,6 @@ import (
 // TODO(rm): The current implementation requires a lot of requests against the
 // Asset Inventory API every time an asset is updated.
 
-// awsAccountAnnotation is the key of the asset annotation that contains the
-// AWS account it belongs to.
-const awsAccountAnnotation = "discovery/aws/account"
-
 const (
 	defaultLogLevel      = "info"
 	defaultRetryDuration = 5 * time.Second
@@ -83,7 +79,7 @@ func run(ctx context.Context, cfg config) error {
 		default:
 		}
 
-		if err := vcli.ProcessAssets(ctx, assetHandler(icli)); err != nil {
+		if err := vcli.ProcessAssets(ctx, assetHandler(icli, cfg)); err != nil {
 			err = fmt.Errorf("error processing assets: %v", err)
 			if cfg.RetryDuration == 0 {
 				return err
@@ -97,7 +93,7 @@ func run(ctx context.Context, cfg config) error {
 }
 
 // assetHandler processes asset events coming from a stream.
-func assetHandler(icli inventory.Client) vulcan.AssetHandler {
+func assetHandler(icli inventory.Client, cfg config) vulcan.AssetHandler {
 	return func(id string, payload vulcan.AssetPayload, isNil bool) error {
 		log.Debug.Printf("graph-vulcan-assets: id=%v payload=%#v isNil=%v", id, payload, isNil)
 
@@ -108,7 +104,7 @@ func assetHandler(icli inventory.Client) vulcan.AssetHandler {
 			return nil
 		}
 
-		if err := refreshAsset(icli, payload); err != nil {
+		if err := refreshAsset(icli, payload, cfg); err != nil {
 			return fmt.Errorf("could not refresh asset: %w", err)
 		}
 
@@ -118,7 +114,7 @@ func assetHandler(icli inventory.Client) vulcan.AssetHandler {
 
 // refreshAsset is called when an asset is created or updated. It takes care of
 // refreshing its time attributes, as well as its parent-of and owns relations.
-func refreshAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
+func refreshAsset(icli inventory.Client, payload vulcan.AssetPayload, cfg config) error {
 	asset, err := upsertAsset(icli, payload)
 	if err != nil {
 		return fmt.Errorf("could not upsert asset: %w", err)
@@ -134,7 +130,7 @@ func refreshAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
 	}
 
 	for _, a := range payload.Annotations {
-		if a.Key != awsAccountAnnotation {
+		if a.Key != cfg.AWSAccountAnnotationKey {
 			continue
 		}
 		if err := setAWSAccount(icli, asset, a.Value); err != nil {
@@ -355,6 +351,7 @@ type config struct {
 	KafkaGroupID                string
 	KafkaUsername               string
 	KafkaPassword               string
+	AWSAccountAnnotationKey     string
 	InventoryEndpoint           string
 	InventoryInsecureSkipVerify bool
 }
@@ -370,6 +367,11 @@ func readConfig() (config, error) {
 	inventoryEndpoint := os.Getenv("INVENTORY_ENDPOINT")
 	if inventoryEndpoint == "" {
 		return config{}, errors.New("missing asset inventory endpoint")
+	}
+
+	awsAccountAnnotationKey := os.Getenv("AWS_ACCOUNT_ANNOTATION_KEY")
+	if awsAccountAnnotationKey == "" {
+		return config{}, errors.New("missing AWS account annotation key")
 	}
 
 	// Optional config.
@@ -405,6 +407,7 @@ func readConfig() (config, error) {
 		KafkaGroupID:                kafkaGroupID,
 		KafkaUsername:               kafkaUsername,
 		KafkaPassword:               kafkaPassword,
+		AWSAccountAnnotationKey:     awsAccountAnnotationKey,
 		InventoryEndpoint:           inventoryEndpoint,
 		InventoryInsecureSkipVerify: inventoryInsecureSkipVerify,
 	}

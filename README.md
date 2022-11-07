@@ -44,6 +44,7 @@ The following environment variables are the **required**:
 | --- | --- | --- |
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | `kafka.example.com:9092` |
 | `INVENTORY_ENDPOINT` | Endpoint of the Security Graph Asset Inventory | `https://inventory.example.com` |
+| `AWS_ACCOUNT_ANNOTATION_KEY` | Key of the annotation that contains the asset's parent AWS account | `discovery/aws/account` |
 
 The following environment variables are **optional**:
 

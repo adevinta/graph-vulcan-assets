@@ -7,6 +7,7 @@ KAFKA_BOOTSTRAP_SERVERS='127.0.0.1:9092'
 KAFKA_GROUP_ID='graph-vulcan-assets'
 KAFKA_USERNAME=''
 KAFKA_PASSWORD=''
+AWS_ACCOUNT_ANNOTATION_KEY='discovery/aws/account'
 
 # Asset Inventory configuration.
 INVENTORY_ENDPOINT='http://127.0.0.1:8000'
