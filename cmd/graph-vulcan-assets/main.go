@@ -80,7 +80,7 @@ func run(ctx context.Context, cfg config) error {
 		}
 
 		if err := vcli.ProcessAssets(ctx, assetHandler(icli, cfg)); err != nil {
-			err = fmt.Errorf("error processing assets: %v", err)
+			err = fmt.Errorf("error processing assets: %w", err)
 			if cfg.RetryDuration == 0 {
 				return err
 			}
