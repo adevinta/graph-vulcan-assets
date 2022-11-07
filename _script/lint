@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e -u
+
+# Set working directory to the root of the repo.
+cd "$(dirname $0)/.."
+
+exec golangci-lint run "$@"
