@@ -12,14 +12,12 @@ import (
 )
 
 type asset struct {
-	ID      string
 	Payload AssetPayload
 	IsNil   bool
 }
 
 var testdataValidAssets = []asset{
 	{
-		ID: "9a1a0332-88b6-4edc-aa37-50adc1ad96da/f110cf6f-803d-442c-9b42-f6d8cd962bf2",
 		Payload: AssetPayload{
 			ID: "f110cf6f-803d-442c-9b42-f6d8cd962bf2",
 			Team: Team{
@@ -47,7 +45,6 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		ID: "9a86666e-ef3a-4630-845d-d3c61e167931/d2e37146-61d7-4010-aa25-2335c385a980",
 		Payload: AssetPayload{
 			ID: "d2e37146-61d7-4010-aa25-2335c385a980",
 			Team: Team{
@@ -75,7 +72,6 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		ID: "a86f4f99-a75c-436a-915d-905b825906d3/4ab22e34-889e-4c35-8ef2-4411bd162636",
 		Payload: AssetPayload{
 			ID: "4ab22e34-889e-4c35-8ef2-4411bd162636",
 			Team: Team{
@@ -103,7 +99,6 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		ID: "32c3eb6a-189f-439c-b921-56ed27fa5c4a/4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
 		Payload: AssetPayload{
 			ID: "4af3df0b-a2ca-46a4-bf5c-c35dbcb1d599",
 			Team: Team{
@@ -131,10 +126,13 @@ var testdataValidAssets = []asset{
 		IsNil: false,
 	},
 	{
-		ID: "bdb2e4a3-5d86-46f8-aae0-b2cd3a56e230/15ae9294-e1ed-4615-8423-2b78e5d04b95",
 		Payload: AssetPayload{
+			ID:         "15ae9294-e1ed-4615-8423-2b78e5d04b95",
 			AssetType:  AssetType("DockerImage"),
 			Identifier: "nilvalue:latest",
+			Team: Team{
+				ID: "bdb2e4a3-5d86-46f8-aae0-b2cd3a56e230",
+			},
 		},
 		IsNil: true,
 	},
@@ -166,8 +164,8 @@ func TestClientProcessAssets(t *testing.T) {
 			cli := NewClient(mp)
 
 			var got []asset
-			err := cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
-				got = append(got, asset{id, payload, isNil})
+			err := cli.ProcessAssets(context.Background(), func(payload AssetPayload, isNil bool) error {
+				got = append(got, asset{payload, isNil})
 				return nil
 			})
 
@@ -199,12 +197,12 @@ func TestClientProcessAssetsError(t *testing.T) {
 		got []asset
 		ctr int
 	)
-	err := cli.ProcessAssets(context.Background(), func(id string, payload AssetPayload, isNil bool) error {
+	err := cli.ProcessAssets(context.Background(), func(payload AssetPayload, isNil bool) error {
 		if ctr >= n {
 			return wantErr
 		}
 
-		got = append(got, asset{id, payload, isNil})
+		got = append(got, asset{payload, isNil})
 		ctr++
 
 		return nil

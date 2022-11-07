@@ -70,7 +70,7 @@ type Client struct {
 
 // AssetHandler processes an asset. isNil is true when the value of the stream
 // message is nil.
-type AssetHandler func(id string, payload AssetPayload, isNil bool) error
+type AssetHandler func(payload AssetPayload, isNil bool) error
 
 // NewClient returns a client for the Vulcan async API using the provided
 // stream processor.
@@ -105,13 +105,30 @@ func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
 				return fmt.Errorf("could not unmarshal asset with ID %v: %w", id, err)
 			}
 		} else {
+			teamID, assetID, err := parseMessageID(id)
+			if err != nil {
+				return fmt.Errorf("could not parse message ID %v: %w", id, err)
+			}
+
+			payload.ID = assetID
 			payload.AssetType = AssetType(typ)
 			payload.Identifier = identifier
+			payload.Team.ID = teamID
 			isNil = true
 		}
 
-		return h(id, payload, isNil)
+		return h(payload, isNil)
 	})
+}
+
+// parseMessageID parses an asset message ID and returns the corresponding team
+// ID and asset ID.
+func parseMessageID(id string) (teamID, assetID string, err error) {
+	parts := strings.Split(id, "/")
+	if len(parts) != 2 {
+		return "", "", errors.New("invalid message ID")
+	}
+	return parts[0], parts[1], nil
 }
 
 // parseMetadata parses and validates message metadata.

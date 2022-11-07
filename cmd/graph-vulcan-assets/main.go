@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/adevinta/graph-vulcan-assets/inventory"
@@ -94,11 +93,11 @@ func run(ctx context.Context, cfg config) error {
 
 // assetHandler processes asset events coming from a stream.
 func assetHandler(icli inventory.Client, cfg config) vulcan.AssetHandler {
-	return func(id string, payload vulcan.AssetPayload, isNil bool) error {
-		log.Debug.Printf("graph-vulcan-assets: id=%v payload=%#v isNil=%v", id, payload, isNil)
+	return func(payload vulcan.AssetPayload, isNil bool) error {
+		log.Debug.Printf("graph-vulcan-assets: payload=%#v isNil=%v", payload, isNil)
 
 		if isNil {
-			if err := expireAsset(icli, id, payload); err != nil {
+			if err := expireAsset(icli, payload); err != nil {
 				return fmt.Errorf("could not expire asset: %w", err)
 			}
 			return nil
@@ -240,7 +239,7 @@ func setAWSAccount(icli inventory.Client, asset inventory.AssetResp, awsAccount 
 //   - If all the owns relations are expired, it expires the asset.
 //   - If the asset is expired, all its parent-of relations are expired (both
 //     ingoing and outgoing).
-func expireAsset(icli inventory.Client, id string, payload vulcan.AssetPayload) error {
+func expireAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
 	assets, err := icli.Assets(string(payload.AssetType), payload.Identifier, time.Time{}, inventory.Pagination{})
 	if err != nil {
 		return fmt.Errorf("could not get assets: %w", err)
@@ -250,12 +249,7 @@ func expireAsset(icli inventory.Client, id string, payload vulcan.AssetPayload) 
 		return errors.New("unknown or duplicated asset")
 	}
 
-	teamID, _, err := parseMessageID(id)
-	if err != nil {
-		return fmt.Errorf("could not parse message ID: %w", err)
-	}
-
-	teams, err := icli.Teams(teamID, inventory.Pagination{})
+	teams, err := icli.Teams(payload.Team.ID, inventory.Pagination{})
 	if err != nil {
 		return fmt.Errorf("could not get teams: %w", err)
 	}
@@ -331,16 +325,6 @@ func expireAsset(icli inventory.Client, id string, payload vulcan.AssetPayload) 
 	}
 
 	return nil
-}
-
-// parseMessageID parses an asset message ID and returns the corresponding team
-// ID and asset ID.
-func parseMessageID(id string) (teamID, assetID string, err error) {
-	parts := strings.Split(id, "/")
-	if len(parts) != 2 {
-		return "", "", errors.New("invalid message ID")
-	}
-	return parts[0], parts[1], nil
 }
 
 // config contains the configuration of the command.
