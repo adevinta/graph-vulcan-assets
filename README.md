@@ -20,22 +20,20 @@ assets stream].
 
 ## Test
 
-Start the testing infrastructure:
-
-```
-./_script/setup
-```
-
 Execute the tests:
 
 ```
-go test -count 1 -p 1 -cover ./...
+_script/test -cover ./...
 ```
+
+`_script/test` makes sure the testing infrastructure is up and running and then
+runs `go test` with the provided arguments. It also disables test caching and
+avoids running multiple test programs in parallel.
 
 Stop the testing infrastructure:
 
 ```
-./_script/clean
+_script/clean
 ```
 
 ## Environment Variables
