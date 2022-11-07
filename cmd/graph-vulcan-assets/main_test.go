@@ -585,12 +585,34 @@ func TestReadConfig(t *testing.T) {
 		{
 			name: "invalid RETRY_DURATION",
 			env: map[string]string{
-				"KAFKA_BOOTSTRAP_SERVERS": "127.0.0.1:9092",
-				"INVENTORY_ENDPOINT":      "http://127.0.0.1:8000",
-				"RETRY_DURATION":          "30x",
+				"KAFKA_BOOTSTRAP_SERVERS":    "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":         "http://127.0.0.1:8000",
+				"AWS_ACCOUNT_ANNOTATION_KEY": "discovery/aws/account",
+				"RETRY_DURATION":             "30x",
 			},
 			wantConfig: config{},
 			wantNilErr: false,
+		},
+		{
+			name: "zero RETRY_DURATION",
+			env: map[string]string{
+				"KAFKA_BOOTSTRAP_SERVERS":    "127.0.0.1:9092",
+				"INVENTORY_ENDPOINT":         "http://127.0.0.1:8000",
+				"AWS_ACCOUNT_ANNOTATION_KEY": "discovery/aws/account",
+				"RETRY_DURATION":             "0",
+			},
+			wantConfig: config{
+				LogLevel:                    defaultLogLevel,
+				RetryDuration:               0,
+				KafkaBootstrapServers:       "127.0.0.1:9092",
+				KafkaGroupID:                defaultKafkaGroupID,
+				KafkaUsername:               "",
+				KafkaPassword:               "",
+				AWSAccountAnnotationKey:     "discovery/aws/account",
+				InventoryEndpoint:           "http://127.0.0.1:8000",
+				InventoryInsecureSkipVerify: false,
+			},
+			wantNilErr: true,
 		},
 	}
 
