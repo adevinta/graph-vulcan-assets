@@ -1,0 +1,26 @@
+[
+  {
+    "key": "key0",
+    "value": "value0",
+    "metadata": [
+      {
+        "key": "hkey00",
+        "value": "hvalue00"
+      },
+      {
+        "key": "hkey01",
+        "value": "hvalue01"
+      }
+    ]
+  },
+  {
+    "key": "key1",
+    "value": "value1",
+    "metadata": null
+  },
+  {
+    "key": "key2",
+    "value": null,
+    "metadata": null
+  }
+]
