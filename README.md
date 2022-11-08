@@ -38,7 +38,7 @@ _script/clean
 
 ## Environment Variables
 
-The following environment variables are the **required**:
+The following environment variables are **required**:
 
 | Variable | Description | Example |
 | --- | --- | --- |

@@ -235,8 +235,8 @@ func setAWSAccount(icli inventory.Client, asset inventory.AssetResp, awsAccount 
 
 // expireAsset expires the provided asset, which means:
 //
-//   - The owns relation with the specific team are expired.
-//   - If all the owns relations are expired, it expires the asset.
+//   - The owns relation with the specific team is expired.
+//   - If all the owns relations are expired, the asset is expired.
 //   - If the asset is expired, all its parent-of relations are expired (both
 //     ingoing and outgoing).
 func expireAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
