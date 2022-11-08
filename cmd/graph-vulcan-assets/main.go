@@ -195,20 +195,22 @@ func upsertTeam(icli inventory.Client, payload vulcan.AssetPayload) (inventory.T
 }
 
 // setOwner sets the owner of an assset. If the owns relation already exists,
-// it does not update it.
+// the original [inventory.OwnsResp.StartTime] is used.
 func setOwner(icli inventory.Client, asset inventory.AssetResp, team inventory.TeamResp) error {
 	owners, err := icli.Owners(asset.ID, inventory.Pagination{})
 	if err != nil {
 		return fmt.Errorf("could not get owners: %w", err)
 	}
 
+	startTime := time.Now()
 	for _, o := range owners {
 		if o.TeamID == team.ID {
-			return nil
+			startTime = o.StartTime
+			break
 		}
 	}
 
-	if _, err := icli.UpsertOwner(asset.ID, team.ID, time.Now(), time.Time{}); err != nil {
+	if _, err := icli.UpsertOwner(asset.ID, team.ID, startTime, time.Time{}); err != nil {
 		return fmt.Errorf("could not upsert owner: %w", err)
 	}
 
