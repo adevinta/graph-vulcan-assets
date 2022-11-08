@@ -145,6 +145,35 @@
 
 
   {
+    "key": "team2/asset5",
+    "value": "{\"Id\":\"asset5\",\"Team\":{\"Id\":\"team2\",\"Name\":\"team2 name\",\"Description\":\"team2 description\",\"Tag\":\"asset5-tag\"},\"Alias\":\"asset5 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset5.example.com\",\"Annotations\":[]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset5.example.com" }
+    ]
+  },
+  {
+    "key": "team2/asset5",
+    "value": null,
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset5.example.com" }
+    ]
+  },
+  {
+    "key": "team2/asset5",
+    "value": "{\"Id\":\"asset5\",\"Team\":{\"Id\":\"team2\",\"Name\":\"team2 name\",\"Description\":\"team2 description\",\"Tag\":\"asset5-tag\"},\"Alias\":\"asset5 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset5.example.com\",\"Annotations\":[]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset5.example.com" }
+    ]
+  },
+
+
+  {
     "key": "invalid message",
     "value": "{",
     "metadata": [

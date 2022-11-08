@@ -161,6 +161,10 @@ var (
 				Identifier: "team1",
 				Name:       "team1 name",
 			},
+			{
+				Identifier: "team2",
+				Name:       "team2 name",
+			},
 		},
 		Assets: []tdAsset{
 			{
@@ -323,6 +327,20 @@ var (
 				Owners: []tdOwns{
 					{
 						Team:    "team1",
+						Expired: false,
+					},
+				},
+			},
+			{
+				ID: tdAssetID{
+					Type:       "Hostname",
+					Identifier: "asset5.example.com",
+				},
+				Expired: false,
+				Parents: nil,
+				Owners: []tdOwns{
+					{
+						Team:    "team2",
 						Expired: false,
 					},
 				},
