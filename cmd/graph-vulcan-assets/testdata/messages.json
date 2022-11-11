@@ -1,7 +1,7 @@
 [
   {
     "key": "team0/asset0",
-    "value": "{\"Id\":\"asset0\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset0-tag\"},\"Alias\":\"asset0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset0.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws0\"}]}",
+    "value": "{\"Id\":\"asset0\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset0-tag\"},\"Alias\":\"asset0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset0.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"000000000000\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -10,7 +10,7 @@
   },
   {
     "key": "team0/asset1",
-    "value": "{\"Id\":\"asset1\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset1-tag\"},\"Alias\":\"asset1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset1.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws0\"}]}",
+    "value": "{\"Id\":\"asset1\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset1-tag\"},\"Alias\":\"asset1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset1.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"arn:aws:iam::000000000000:root\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -19,7 +19,7 @@
   },
   {
     "key": "team0/asset2",
-    "value": "{\"Id\":\"asset2\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset2-tag\"},\"Alias\":\"asset2 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset2.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws0\"}]}",
+    "value": "{\"Id\":\"asset2\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset2-tag\"},\"Alias\":\"asset2 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset2.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"000000000000\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -28,7 +28,7 @@
   },
   {
     "key": "team0/asset3",
-    "value": "{\"Id\":\"asset3\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset3-tag\"},\"Alias\":\"asset3 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset3.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws1\"}]}",
+    "value": "{\"Id\":\"asset3\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"asset3-tag\"},\"Alias\":\"asset3 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset3.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"111111111111\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -37,28 +37,28 @@
   },
 
   {
-    "key": "team0/aws0",
-    "value": "{\"Id\":\"aws0\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"aws0-tag\"},\"Alias\":\"aws0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"aws0\",\"Annotations\":[]}",
+    "key": "team0/arn:aws:iam::000000000000:root",
+    "value": "{\"Id\":\"aws0\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"aws0-tag\"},\"Alias\":\"aws0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"arn:aws:iam::000000000000:root\",\"Annotations\":[]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws0" }
+      { "key": "identifier", "value": "arn:aws:iam::000000000000:root" }
     ]
   },
   {
-    "key": "team0/aws1",
-    "value": "{\"Id\":\"aws1\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"aws1-tag\"},\"Alias\":\"aws1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"aws1\",\"Annotations\":[]}",
+    "key": "team0/arn:aws:iam::111111111111:root",
+    "value": "{\"Id\":\"aws1\",\"Team\":{\"Id\":\"team0\",\"Name\":\"team0 name\",\"Description\":\"team0 description\",\"Tag\":\"aws1-tag\"},\"Alias\":\"aws1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"arn:aws:iam::111111111111:root\",\"Annotations\":[]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws1" }
+      { "key": "identifier", "value": "arn:aws:iam::111111111111:root" }
     ]
   },
 
 
   {
     "key": "team1/asset0",
-    "value": "{\"Id\":\"asset0\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset0-tag\"},\"Alias\":\"asset0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset0.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws0\"}]}",
+    "value": "{\"Id\":\"asset0\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset0-tag\"},\"Alias\":\"asset0 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset0.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"000000000000\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -67,7 +67,7 @@
   },
   {
     "key": "team1/asset3",
-    "value": "{\"Id\":\"asset3\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset3-tag\"},\"Alias\":\"asset3 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset3.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws1\"}]}",
+    "value": "{\"Id\":\"asset3\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset3-tag\"},\"Alias\":\"asset3 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset3.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"111111111111\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -76,7 +76,7 @@
   },
   {
     "key": "team1/asset4",
-    "value": "{\"Id\":\"asset4\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset4-tag\"},\"Alias\":\"asset4 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset4.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"aws2\"}]}",
+    "value": "{\"Id\":\"asset4\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"asset4-tag\"},\"Alias\":\"asset4 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset4.example.com\",\"Annotations\":[{\"Key\":\"discovery/aws/account\",\"Value\":\"222222222222\"}]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "Hostname" },
@@ -85,21 +85,21 @@
   },
 
   {
-    "key": "team1/aws1",
-    "value": "{\"Id\":\"aws1\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"aws1-tag\"},\"Alias\":\"aws1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"aws1\",\"Annotations\":[]}",
+    "key": "team1/arn:aws:iam::111111111111:root",
+    "value": "{\"Id\":\"aws1\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"aws1-tag\"},\"Alias\":\"aws1 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"arn:aws:iam::111111111111:root\",\"Annotations\":[]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws1" }
+      { "key": "identifier", "value": "arn:aws:iam::111111111111:root" }
     ]
   },
   {
-    "key": "team1/aws2",
-    "value": "{\"Id\":\"aws2\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"aws2-tag\"},\"Alias\":\"aws2 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"aws2\",\"Annotations\":[]}",
+    "key": "team1/arn:aws:iam::222222222222:root",
+    "value": "{\"Id\":\"aws2\",\"Team\":{\"Id\":\"team1\",\"Name\":\"team1 name\",\"Description\":\"team1 description\",\"Tag\":\"aws2-tag\"},\"Alias\":\"aws2 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"AWSAccount\",\"Identifier\":\"arn:aws:iam::222222222222:root\",\"Annotations\":[]}",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws2" }
+      { "key": "identifier", "value": "arn:aws:iam::222222222222:root" }
     ]
   },
 
@@ -115,21 +115,21 @@
   },
 
   {
-    "key": "team0/aws1",
+    "key": "team0/arn:aws:iam::111111111111:root",
     "value": null,
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws1" }
+      { "key": "identifier", "value": "arn:aws:iam::111111111111:root" }
     ]
   },
   {
-    "key": "team1/aws1",
+    "key": "team1/arn:aws:iam::111111111111:root",
     "value": null,
     "metadata": [
       { "key": "version", "value": "0.1.2" },
       { "key": "type", "value": "AWSAccount" },
-      { "key": "identifier", "value": "aws1" }
+      { "key": "identifier", "value": "arn:aws:iam::111111111111:root" }
     ]
   },
 
