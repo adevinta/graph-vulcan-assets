@@ -45,7 +45,6 @@ func run(ctx context.Context, cfg config) error {
 		"bootstrap.servers":  cfg.KafkaBootstrapServers,
 		"group.id":           cfg.KafkaGroupID,
 		"auto.offset.reset":  "earliest",
-		"enable.auto.commit": false,
 	}
 
 	if cfg.KafkaUsername != "" && cfg.KafkaPassword != "" {
