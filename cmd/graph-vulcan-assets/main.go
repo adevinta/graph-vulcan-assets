@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 
 	"github.com/adevinta/graph-vulcan-assets/inventory"
@@ -42,10 +43,9 @@ func run(ctx context.Context, cfg config) error {
 	}
 
 	kcfg := map[string]any{
-		"bootstrap.servers":  cfg.KafkaBootstrapServers,
-		"group.id":           cfg.KafkaGroupID,
-		"auto.offset.reset":  "earliest",
-		"enable.auto.commit": false,
+		"bootstrap.servers": cfg.KafkaBootstrapServers,
+		"group.id":          cfg.KafkaGroupID,
+		"auto.offset.reset": "earliest",
 	}
 
 	if cfg.KafkaUsername != "" && cfg.KafkaPassword != "" {
@@ -217,10 +217,17 @@ func setOwner(icli inventory.Client, asset inventory.AssetResp, team inventory.T
 	return nil
 }
 
-// setAWSAccount sets the parent AWS account of an assset.
+// setAWSAccount sets the parent AWS account of an assset. It takes care of
+// normalizing the AWS account ID, so it always has the long format
+// "arn:aws:iam::000000000000:root".
 func setAWSAccount(icli inventory.Client, asset inventory.AssetResp, awsAccount string) error {
+	normAWSAccount, err := normalizeAWSAccountID(awsAccount)
+	if err != nil {
+		return fmt.Errorf("could not normalize AWS account ID: %w", err)
+	}
+
 	payload := vulcan.AssetPayload{
-		Identifier: awsAccount,
+		Identifier: normAWSAccount,
 		AssetType:  vulcan.AssetType("AWSAccount"),
 	}
 	assetAWSAccount, err := upsertAsset(icli, payload)
@@ -233,6 +240,25 @@ func setAWSAccount(icli inventory.Client, asset inventory.AssetResp, awsAccount 
 	}
 
 	return nil
+}
+
+var (
+	shortAWSAccountRe = regexp.MustCompile(`^[0-9]{12}$`)
+	longAWSAccountRe  = regexp.MustCompile(`^arn:aws:iam::[0-9]{12}:root$`)
+)
+
+// normalizeAWSAccountID normalizes the provided AWS account ID. The returned
+// ID will always follows the format "arn:aws:iam::000000000000:root".
+func normalizeAWSAccountID(id string) (string, error) {
+	if longAWSAccountRe.MatchString(id) {
+		return id, nil
+	}
+
+	if shortAWSAccountRe.MatchString(id) {
+		return fmt.Sprintf("arn:aws:iam::%v:root", id), nil
+	}
+
+	return "", fmt.Errorf("invalid AWS account id format: %v", id)
 }
 
 // expireAsset expires the provided asset, which means:

@@ -177,7 +177,7 @@ var (
 					{
 						Parent: tdAssetID{
 							Type:       "AWSAccount",
-							Identifier: "aws0",
+							Identifier: "arn:aws:iam::000000000000:root",
 						},
 						Expired: false,
 					},
@@ -203,7 +203,7 @@ var (
 					{
 						Parent: tdAssetID{
 							Type:       "AWSAccount",
-							Identifier: "aws0",
+							Identifier: "arn:aws:iam::000000000000:root",
 						},
 						Expired: false,
 					},
@@ -225,7 +225,7 @@ var (
 					{
 						Parent: tdAssetID{
 							Type:       "AWSAccount",
-							Identifier: "aws0",
+							Identifier: "arn:aws:iam::000000000000:root",
 						},
 						Expired: false,
 					},
@@ -247,7 +247,7 @@ var (
 					{
 						Parent: tdAssetID{
 							Type:       "AWSAccount",
-							Identifier: "aws1",
+							Identifier: "arn:aws:iam::111111111111:root",
 						},
 						Expired: true,
 					},
@@ -273,7 +273,7 @@ var (
 					{
 						Parent: tdAssetID{
 							Type:       "AWSAccount",
-							Identifier: "aws2",
+							Identifier: "arn:aws:iam::222222222222:root",
 						},
 						Expired: true,
 					},
@@ -288,7 +288,7 @@ var (
 			{
 				ID: tdAssetID{
 					Type:       "AWSAccount",
-					Identifier: "aws0",
+					Identifier: "arn:aws:iam::000000000000:root",
 				},
 				Expired: false,
 				Parents: nil,
@@ -302,7 +302,7 @@ var (
 			{
 				ID: tdAssetID{
 					Type:       "AWSAccount",
-					Identifier: "aws1",
+					Identifier: "arn:aws:iam::111111111111:root",
 				},
 				Expired: true,
 				Parents: nil,
@@ -320,7 +320,7 @@ var (
 			{
 				ID: tdAssetID{
 					Type:       "AWSAccount",
-					Identifier: "aws2",
+					Identifier: "arn:aws:iam::222222222222:root",
 				},
 				Expired: false,
 				Parents: nil,
@@ -643,6 +643,54 @@ func TestReadConfig(t *testing.T) {
 
 			if diff := cmp.Diff(tt.wantConfig, config); diff != "" {
 				t.Errorf("messages mismatch (-want +got):\n%v", diff)
+			}
+		})
+	}
+}
+
+func TestNormalizeAWSAccountID(t *testing.T) {
+	tests := []struct {
+		name       string
+		id         string
+		wantID     string
+		wantNilErr bool
+	}{
+		{
+			name:       "long ID",
+			id:         "arn:aws:iam::123456789012:root",
+			wantID:     "arn:aws:iam::123456789012:root",
+			wantNilErr: true,
+		},
+		{
+			name:       "short ID",
+			id:         "123456789012",
+			wantID:     "arn:aws:iam::123456789012:root",
+			wantNilErr: true,
+		},
+		{
+			name:       "invalid long ID",
+			id:         "arn:aws:iam::12345abc9012:root",
+			wantID:     "",
+			wantNilErr: false,
+		},
+		{
+			name:       "invalid short ID",
+			id:         "12345abc9012",
+			wantID:     "",
+			wantNilErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotID, err := normalizeAWSAccountID(tt.id)
+
+			if (err == nil) != tt.wantNilErr {
+				t.Errorf("unexpected error: wantNilErr=%v, got=%v", tt.wantNilErr, err)
+			}
+
+			if gotID != tt.wantID {
+				t.Errorf("unexpected ID: want=%v, got=%v", tt.wantID, gotID)
 			}
 		})
 	}
