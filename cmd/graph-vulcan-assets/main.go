@@ -273,8 +273,12 @@ func expireAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
 		return fmt.Errorf("could not get assets: %w", err)
 	}
 
-	if len(assets) != 1 {
-		return errors.New("unknown or duplicated asset")
+	if len(assets) == 0 {
+		// The asset does not exist, so nothing needs to be done.
+		return nil
+	}
+	if len(assets) > 1 {
+		return errors.New("duplicated asset")
 	}
 
 	teams, err := icli.Teams(payload.Team.ID, inventory.Pagination{})
@@ -282,8 +286,12 @@ func expireAsset(icli inventory.Client, payload vulcan.AssetPayload) error {
 		return fmt.Errorf("could not get teams: %w", err)
 	}
 
-	if len(teams) != 1 {
-		return errors.New("unknown or duplicated team")
+	if len(teams) == 0 {
+		// The team does not exist, so nothing needs to be done.
+		return nil
+	}
+	if len(teams) > 1 {
+		return errors.New("duplicated team")
 	}
 
 	now := time.Now()

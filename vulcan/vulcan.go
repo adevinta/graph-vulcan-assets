@@ -103,12 +103,12 @@ func (c Client) ProcessAssets(ctx context.Context, h AssetHandler) error {
 
 		if msg.Value != nil {
 			if err := json.Unmarshal(msg.Value, &payload); err != nil {
-				return fmt.Errorf("could not unmarshal asset with ID %v: %w", id, err)
+				return fmt.Errorf("could not unmarshal asset with ID %q: %w", id, err)
 			}
 		} else {
 			teamID, assetID, err := parseMessageID(id)
 			if err != nil {
-				return fmt.Errorf("could not parse message ID %v: %w", id, err)
+				return fmt.Errorf("could not parse message ID %q: %w", id, err)
 			}
 
 			payload.ID = assetID
