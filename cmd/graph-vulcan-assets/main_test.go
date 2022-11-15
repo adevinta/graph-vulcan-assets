@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -23,6 +24,10 @@ const (
 	gremlinEndpoint  = "ws://127.0.0.1:8182/gremlin"
 	messagesFile     = "testdata/messages.json"
 	timeout          = 5 * time.Minute
+
+	// endMessageKey is the key of the last message of testdata. It
+	// contains an invalid payload to force run to return.
+	endMessageKey = "ENDTESTDATA"
 )
 
 func setupKafka() error {
@@ -164,6 +169,10 @@ var (
 			{
 				Identifier: "team2",
 				Name:       "team2 name",
+			},
+			{
+				Identifier: "team3",
+				Name:       "team3 name",
 			},
 		},
 		Assets: []tdAsset{
@@ -345,6 +354,20 @@ var (
 					},
 				},
 			},
+			{
+				ID: tdAssetID{
+					Type:       "Hostname",
+					Identifier: "asset6.example.com",
+				},
+				Expired: false,
+				Parents: nil,
+				Owners: []tdOwns{
+					{
+						Team:    "team3",
+						Expired: false,
+					},
+				},
+			},
 		},
 	}
 
@@ -393,9 +416,9 @@ func TestRun(t *testing.T) {
 	defer cancel()
 
 	if err := run(ctx, cfg); err != nil {
-		// Ignore this error. The last message of testdata has an
-		// invalid payload to force run to return.
-		t.Logf("error processing messages: %v", err)
+		if !strings.Contains(err.Error(), endMessageKey) {
+			t.Fatalf("error processing messages: %v", err)
+		}
 	}
 
 	icli, err := inventory.NewClient(cfg.InventoryEndpoint, cfg.InventoryInsecureSkipVerify)

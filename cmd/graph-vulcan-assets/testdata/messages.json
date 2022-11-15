@@ -174,7 +174,36 @@
 
 
   {
-    "key": "invalid message",
+    "key": "team3/asset6",
+    "value": "{\"Id\":\"asset6\",\"Team\":{\"Id\":\"team3\",\"Name\":\"team3 name\",\"Description\":\"team3 description\",\"Tag\":\"asset6-tag\"},\"Alias\":\"asset6 alias\",\"Rolfp\":\"R:0/O:1/L:0/F:1/P:0+S:1\",\"Scannable\":true,\"AssetType\":\"Hostname\",\"Identifier\":\"asset6.example.com\",\"Annotations\":[]}",
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset6.example.com" }
+    ]
+  },
+  {
+    "key": "team3/asset999",
+    "value": null,
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset999.example.com" }
+    ]
+  },
+  {
+    "key": "team999/asset6",
+    "value": null,
+    "metadata": [
+      { "key": "version", "value": "0.1.2" },
+      { "key": "type", "value": "Hostname" },
+      { "key": "identifier", "value": "asset6.example.com" }
+    ]
+  },
+
+
+  {
+    "key": "ENDTESTDATA",
     "value": "{",
     "metadata": [
       { "key": "version", "value": "0.1.2" },
